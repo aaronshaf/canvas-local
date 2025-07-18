@@ -86,6 +86,12 @@ Located in `packages/shared-lib/src/database/schema.sql`, includes tables for:
 
 ## Development Guidelines
 
+### TypeScript Strictness
+- Never use explicit `any` or implicit `any` types
+- Avoid type casting (e.g., `as Type` or `<Type>`)
+- Use proper type inference and generic types instead
+- Define explicit types for all function parameters and return values
+
 ### File Size Limits
 - Warning at 500 lines
 - Build fails at 700 lines
