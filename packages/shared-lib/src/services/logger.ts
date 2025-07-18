@@ -102,3 +102,9 @@ export const makeLoggerLayer = (config: LoggerConfig): Layer.Layer<LoggerService
       config,
     }),
   );
+
+export const LoggerServiceLive = makeLoggerLayer({
+  minLevel: 'Info',
+  enableConsole: true,
+  enableFile: false,
+});

@@ -1,0 +1,66 @@
+query GetAssignments($courseId: ID!, $first: Int = 20, $after: String) {
+  course(id: $courseId) {
+    assignmentsConnection(first: $first, after: $after) {
+      edges {
+        node {
+          id
+          _id
+          name
+          description
+          dueAt
+          pointsPossible
+          state
+          submissionTypes
+          submissionsConnection(first: 1) {
+            edges {
+              node {
+                id
+                _id
+                state
+                score
+                grade
+                submittedAt
+              }
+            }
+          }
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+}
+
+query GetAssignment($assignmentId: ID!) {
+  assignment(id: $assignmentId) {
+    id
+    _id
+    name
+    description
+    dueAt
+    pointsPossible
+    state
+    submissionTypes
+    rubric {
+      id
+      _id
+      title
+      pointsPossible
+    }
+    submissionsConnection(first: 1) {
+      edges {
+        node {
+          id
+          _id
+          state
+          score
+          grade
+          submittedAt
+          attempt
+        }
+      }
+    }
+  }
+}

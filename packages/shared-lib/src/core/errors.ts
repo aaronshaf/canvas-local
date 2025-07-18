@@ -39,6 +39,13 @@ export class ConfigurationError extends Data.TaggedError('ConfigurationError')<{
   readonly key?: string;
 }> {}
 
+export class CanvasApiError extends Data.TaggedError('CanvasApiError')<{
+  readonly message: string;
+  readonly status?: number;
+  readonly endpoint?: string;
+  readonly errors?: ReadonlyArray<{ field?: string; message: string }>;
+}> {}
+
 export type AppError =
   | NetworkError
   | AuthenticationError
@@ -46,4 +53,5 @@ export type AppError =
   | DatabaseError
   | NotFoundError
   | RateLimitError
-  | ConfigurationError;
+  | ConfigurationError
+  | CanvasApiError;

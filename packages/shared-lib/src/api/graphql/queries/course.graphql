@@ -1,0 +1,47 @@
+query GetCourses {
+  allCourses {
+    id
+    _id
+    name
+    courseCode
+    term {
+      id
+      _id
+      name
+    }
+    enrollmentsConnection {
+      edges {
+        node {
+          id
+          _id
+          state
+          type
+        }
+      }
+    }
+  }
+}
+
+query GetCourse($courseId: ID!) {
+  course(id: $courseId) {
+    id
+    _id
+    name
+    courseCode
+    term {
+      id
+      _id
+      name
+    }
+    modulesConnection {
+      edges {
+        node {
+          id
+          _id
+          name
+          position
+        }
+      }
+    }
+  }
+}
