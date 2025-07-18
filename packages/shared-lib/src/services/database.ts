@@ -105,10 +105,7 @@ export const makeMockDatabaseLayer = (config: DatabaseConfig): Layer.Layer<Datab
   Layer.succeed(DatabaseServiceTag, new MockDatabaseService(config));
 
 export const DatabaseServiceLive = makeMockDatabaseLayer({
-  name: 'DatabaseService',
-  version: '1.0.0',
-  config: {
-    type: 'sqlite',
-    path: ':memory:',
-  },
+  path: ':memory:',
+  enableWAL: true,
+  busyTimeout: 5000,
 });

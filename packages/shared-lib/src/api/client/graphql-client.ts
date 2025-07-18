@@ -72,15 +72,17 @@ const handleGraphQLErrors = <T>(result: OperationResult<T>): Effect.Effect<T, Ap
 
     if (graphQLErrors && graphQLErrors.length > 0) {
       const firstError = graphQLErrors[0];
-      return Effect.fail(
-        new CanvasApiError({
-          message: firstError.message,
-          errors: graphQLErrors.map((err) => ({
-            message: err.message,
-            field: err.path?.join('.'),
-          })),
-        }),
-      );
+      if (firstError) {
+        return Effect.fail(
+          new CanvasApiError({
+            message: firstError.message,
+            errors: graphQLErrors.map((err) => ({
+              message: err.message,
+              field: err.path?.join('.'),
+            })),
+          }),
+        );
+      }
     }
 
     return Effect.fail(

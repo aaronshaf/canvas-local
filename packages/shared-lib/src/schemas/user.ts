@@ -16,15 +16,14 @@ export const User = Schema.Struct({
 
 export type User = Schema.Schema.Type<typeof User>;
 
-export const CreateUserInput = Schema.pick(
-  User,
-  'id',
-  'name',
-  'email',
-  'avatar_url',
-  'pronouns',
-  'login_id',
-  'sis_user_id',
-);
+export const CreateUserInput = Schema.Struct({
+  id: Schema.String,
+  name: Schema.String,
+  email: Schema.String,
+  avatar_url: Schema.optional(Schema.String),
+  pronouns: Schema.optional(Schema.String),
+  login_id: Schema.optional(Schema.String),
+  sis_user_id: Schema.optional(Schema.String),
+});
 
 export type CreateUserInput = Schema.Schema.Type<typeof CreateUserInput>;
