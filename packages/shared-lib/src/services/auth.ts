@@ -1,6 +1,6 @@
 import { Context, Effect, Layer, Option, Ref, Schema } from 'effect';
 import { UnifiedApiClientLive, UnifiedApiClientService } from '../api/client/unified-client';
-import { AuthenticationError, ConfigurationError } from '../core/errors';
+import { AuthenticationError } from '../core/errors';
 import { DatabaseServiceLive, DatabaseServiceTag } from './database';
 import { LoggerServiceLive, LoggerServiceTag } from './logger';
 
@@ -26,22 +26,22 @@ export interface AuthService {
   readonly authenticate: (
     baseUrl: string,
     accessToken: string,
-  ) => Effect.Effect<AuthState, AuthenticationError>;
+  ) => Effect.Effect<AuthState, AuthenticationError, never>;
 
   readonly authenticateOAuth: (
     baseUrl: string,
     authCode: string,
     clientId: string,
     clientSecret: string,
-  ) => Effect.Effect<AuthState, AuthenticationError>;
+  ) => Effect.Effect<AuthState, AuthenticationError, never>;
 
-  readonly logout: () => Effect.Effect<void>;
+  readonly logout: () => Effect.Effect<void, never, never>;
 
-  readonly getAuthState: () => Effect.Effect<AuthState>;
+  readonly getAuthState: () => Effect.Effect<AuthState, never, never>;
 
-  readonly refreshToken: () => Effect.Effect<AuthToken, AuthenticationError>;
+  readonly refreshToken: () => Effect.Effect<AuthToken, AuthenticationError, never>;
 
-  readonly validateToken: () => Effect.Effect<boolean, AuthenticationError>;
+  readonly validateToken: () => Effect.Effect<boolean, AuthenticationError, never>;
 }
 
 export class AuthServiceTag extends Context.Tag('AuthService')<AuthServiceTag, AuthService>() {}
@@ -49,6 +49,7 @@ export class AuthServiceTag extends Context.Tag('AuthService')<AuthServiceTag, A
 const makeAuthService = Effect.gen(function* () {
   const logger = yield* LoggerServiceTag;
   const database = yield* DatabaseServiceTag;
+  const apiClient = yield* UnifiedApiClientService;
 
   // Initialize auth state
   const authStateRef = yield* Ref.make<AuthState>({
@@ -61,24 +62,32 @@ const makeAuthService = Effect.gen(function* () {
   // Load saved auth state from database
   yield* Effect.gen(function* () {
     try {
-      const result = yield* database.query(
+      const result = yield* database.execute(
         'SELECT * FROM auth_tokens WHERE is_active = 1 ORDER BY created_at DESC LIMIT 1',
       );
 
       if (result.rows.length > 0) {
-        const row = result.rows[0];
+        interface AuthTokenRow {
+          access_token: string;
+          refresh_token: string | null;
+          expires_at: number | null;
+          scope: string | null;
+          user_id: string | null;
+          base_url: string | null;
+        }
+        const row = result.rows[0] as AuthTokenRow;
         const token: AuthToken = {
-          accessToken: row.access_token as string,
-          refreshToken: Option.fromNullable(row.refresh_token as string | null),
-          expiresAt: Option.fromNullable(row.expires_at as number | null),
-          scope: Option.fromNullable(row.scope as string | null),
+          accessToken: row.access_token,
+          refreshToken: Option.fromNullable(row.refresh_token),
+          expiresAt: Option.fromNullable(row.expires_at),
+          scope: Option.fromNullable(row.scope),
         };
 
         yield* Ref.set(authStateRef, {
           isAuthenticated: true,
           token: Option.some(token),
-          userId: Option.fromNullable(row.user_id as string | null),
-          baseUrl: Option.fromNullable(row.base_url as string | null),
+          userId: Option.fromNullable(row.user_id),
+          baseUrl: Option.fromNullable(row.base_url),
         });
       }
     } catch {
@@ -91,55 +100,60 @@ const makeAuthService = Effect.gen(function* () {
       yield* logger.info('Authenticating with access token');
 
       // Validate the token by making a test API call
-      const apiClient = yield* UnifiedApiClientService;
 
-      try {
-        // biome-ignore lint/suspicious/noExplicitAny: Canvas API response type
-        const user = yield* apiClient.get<any>('/users/self');
-
-        const token: AuthToken = {
-          accessToken,
-          refreshToken: Option.none(),
-          expiresAt: Option.none(),
-          scope: Option.none(),
-        };
-
-        const newState: AuthState = {
-          isAuthenticated: true,
-          token: Option.some(token),
-          userId: Option.some(String(user.id)),
-          baseUrl: Option.some(baseUrl),
-        };
-
-        // Save to database
-        yield* database
-          .execute(
-            `INSERT INTO auth_tokens (access_token, user_id, base_url, is_active, created_at)
-           VALUES (?, ?, ?, 1, datetime('now'))`,
-            [accessToken, user.id, baseUrl],
-          )
-          .pipe(
-            Effect.catchAll(() =>
-              Effect.fail(
-                new AuthenticationError({
-                  message: 'Failed to save authentication',
-                  code: 'SAVE_FAILED',
-                }),
-              ),
-            ),
-          );
-
-        yield* Ref.set(authStateRef, newState);
-        yield* logger.info('Authentication successful', { userId: user.id });
-
-        return newState;
-      } catch (error) {
-        yield* logger.error('Authentication failed', { error });
-        throw new AuthenticationError({
-          message: 'Invalid access token',
-          code: 'INVALID_TOKEN',
-        });
+      interface CanvasUserResponse {
+        id: number;
+        name: string;
+        email?: string;
       }
+
+      const user = yield* apiClient.get<CanvasUserResponse>('/users/self').pipe(
+        Effect.catchAll(() =>
+          Effect.fail(
+            new AuthenticationError({
+              message: 'Invalid access token',
+              code: 'INVALID_TOKEN',
+            }),
+          ),
+        ),
+      );
+
+      const token: AuthToken = {
+        accessToken,
+        refreshToken: Option.none(),
+        expiresAt: Option.none(),
+        scope: Option.none(),
+      };
+
+      const newState: AuthState = {
+        isAuthenticated: true,
+        token: Option.some(token),
+        userId: Option.some(String(user.id)),
+        baseUrl: Option.some(baseUrl),
+      };
+
+      // Save to database
+      yield* database
+        .execute(
+          `INSERT INTO auth_tokens (access_token, user_id, base_url, is_active, created_at)
+         VALUES (?, ?, ?, 1, datetime('now'))`,
+          [accessToken, user.id, baseUrl],
+        )
+        .pipe(
+          Effect.catchAll(() =>
+            Effect.fail(
+              new AuthenticationError({
+                message: 'Failed to save authentication',
+                code: 'SAVE_FAILED',
+              }),
+            ),
+          ),
+        );
+
+      yield* Ref.set(authStateRef, newState);
+      yield* logger.info('Authentication successful', { userId: user.id });
+
+      return newState;
     });
 
   const authenticateOAuth = (
@@ -176,7 +190,7 @@ const makeAuthService = Effect.gen(function* () {
 
           return res.json();
         },
-        catch: (error) =>
+        catch: () =>
           new AuthenticationError({
             message: 'OAuth token exchange failed',
             code: 'OAUTH_FAILED',
@@ -209,10 +223,9 @@ const makeAuthService = Effect.gen(function* () {
       yield* logger.info('Logging out');
 
       // Mark all tokens as inactive
-      yield* Effect.tryPromise({
-        try: () => database.execute('UPDATE auth_tokens SET is_active = 0'),
-        catch: () => undefined,
-      }).pipe(Effect.ignore);
+      yield* database
+        .execute('UPDATE auth_tokens SET is_active = 0')
+        .pipe(Effect.catchAll(() => Effect.succeed(undefined)));
 
       yield* Ref.set(authStateRef, {
         isAuthenticated: false,
@@ -238,12 +251,12 @@ const makeAuthService = Effect.gen(function* () {
       }
 
       const currentToken = Option.getOrThrow(state.token);
-      const refreshTokenValue = Option.getOrElse(currentToken.refreshToken, () => {
-        throw new AuthenticationError({
-          message: 'No refresh token available',
-          code: 'NO_REFRESH_TOKEN',
-        });
-      });
+      // const refreshTokenValue = Option.getOrElse(currentToken.refreshToken, () => {
+      //   throw new AuthenticationError({
+      //     message: 'No refresh token available',
+      //     code: 'NO_REFRESH_TOKEN',
+      //   });
+      // });
 
       // TODO: Implement refresh token logic
       yield* logger.warn('Refresh token not implemented');
@@ -271,13 +284,10 @@ const makeAuthService = Effect.gen(function* () {
       }
 
       // Validate with API
-      try {
-        const apiClient = yield* UnifiedApiClientService;
-        yield* apiClient.get('/users/self');
-        return true;
-      } catch {
-        return false;
-      }
+      return yield* apiClient.get('/users/self').pipe(
+        Effect.map(() => true),
+        Effect.catchAll(() => Effect.succeed(false)),
+      );
     });
 
   return {

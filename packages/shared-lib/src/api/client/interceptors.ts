@@ -1,19 +1,20 @@
-import { Duration, Effect, Ref, Schedule, pipe } from 'effect';
-import type { AppError, CanvasApiError } from '../../core/errors';
-import { LoggerServiceTag } from '../../services/logger';
+import { Duration, Effect, Ref } from 'effect';
+import type { AppError } from '../../core/errors';
+import { type LoggerService, LoggerServiceTag } from '../../services/logger';
 import type { ApiRequest, ApiResponse } from './types';
 
-export interface RequestInterceptor {
-  readonly onRequest: (request: ApiRequest) => Effect.Effect<ApiRequest, never>;
+export interface RequestInterceptor<R = never> {
+  readonly onRequest: (request: ApiRequest) => Effect.Effect<ApiRequest, never, R>;
 }
 
-export interface ResponseInterceptor<E = AppError> {
-  readonly onResponse: <T>(response: ApiResponse<T>) => Effect.Effect<ApiResponse<T>, E>;
+export interface ResponseInterceptor<E = AppError, R = never> {
+  readonly onResponse: <T>(response: ApiResponse<T>) => Effect.Effect<ApiResponse<T>, E, R>;
 
-  readonly onError: (error: E, request: ApiRequest) => Effect.Effect<never, E>;
+  readonly onError: (error: E, request: ApiRequest) => Effect.Effect<never, E, R>;
 }
 
-export const loggingInterceptor: RequestInterceptor & ResponseInterceptor = {
+export const loggingInterceptor: RequestInterceptor<LoggerService> &
+  ResponseInterceptor<AppError, LoggerService> = {
   onRequest: (request) =>
     Effect.gen(function* () {
       const logger = yield* LoggerServiceTag;
@@ -40,35 +41,24 @@ export const loggingInterceptor: RequestInterceptor & ResponseInterceptor = {
       return response;
     }),
 
-  onError: (error, request) =>
+  onError: (error, _request) =>
     Effect.gen(function* () {
       const logger = yield* LoggerServiceTag;
 
       yield* logger.error('API Error', {
         error,
-        request: {
-          method: request.method,
-          path: request.path,
-        },
       });
 
       return yield* Effect.fail(error);
     }),
 };
 
-export const retryInterceptor = (
-  maxRetries = 3,
-  baseDelay: Duration.Duration = Duration.seconds(1),
-): ResponseInterceptor => ({
+export const retryInterceptor = (): ResponseInterceptor => ({
   onResponse: (response) => Effect.succeed(response),
 
-  onError: (error, request) => {
+  onError: (error, _request) => {
     if (error._tag === 'RateLimitError' || error._tag === 'NetworkError') {
-      const schedule = pipe(
-        Schedule.exponential(baseDelay),
-        Schedule.intersect(Schedule.recurs(maxRetries)),
-      );
-
+      // TODO: Implement retry with exponential backoff
       return Effect.fail(error);
     }
 
@@ -82,7 +72,7 @@ interface RateLimitState {
   readonly limit: number;
 }
 
-export const rateLimitInterceptor = (): ResponseInterceptor => {
+export const rateLimitInterceptor = (): ResponseInterceptor<AppError, LoggerService> => {
   const stateRef = Ref.unsafeMake<RateLimitState>({
     remaining: 200,
     reset: Date.now() + 3600000,
@@ -107,7 +97,7 @@ export const rateLimitInterceptor = (): ResponseInterceptor => {
         return response;
       }),
 
-    onError: (error, request) =>
+    onError: (error, _request) =>
       Effect.gen(function* () {
         if (error._tag === 'RateLimitError') {
           const state = yield* Ref.get(stateRef);
@@ -136,28 +126,18 @@ export const rateLimitInterceptor = (): ResponseInterceptor => {
 
 export const authRefreshInterceptor = (
   refreshToken: () => Effect.Effect<string, never>,
-): ResponseInterceptor => ({
+): ResponseInterceptor<AppError, LoggerService> => ({
   onResponse: (response) => Effect.succeed(response),
 
-  onError: (error, request) =>
+  onError: (error, _request) =>
     Effect.gen(function* () {
       if (error._tag === 'AuthenticationError' && error.code === 'UNAUTHORIZED') {
         const logger = yield* LoggerServiceTag;
         yield* logger.info('Refreshing authentication token');
 
-        const newToken = yield* refreshToken();
+        yield* refreshToken();
 
-        // Update the request with the new token
-        const updatedRequest: ApiRequest = {
-          ...request,
-          headers: {
-            ...request.headers,
-            Authorization: `Bearer ${newToken}`,
-          },
-        };
-
-        // Retry the request with the new token
-        // Note: This would need to be implemented in the actual client
+        // TODO: Implement request retry with new token
         // For now, we'll just fail with the original error
         return yield* Effect.fail(error);
       }
@@ -166,13 +146,18 @@ export const authRefreshInterceptor = (
     }),
 });
 
-export const combineInterceptors = (
-  ...interceptors: Array<RequestInterceptor | ResponseInterceptor>
-): { request: RequestInterceptor; response: ResponseInterceptor } => {
-  const requestInterceptors = interceptors.filter((i): i is RequestInterceptor => 'onRequest' in i);
+// Simplified interceptor types for external use (without dependencies)
+// Simplified interceptor types for external use (without dependencies)
+
+export const combineInterceptors = <R1 = never, R2 = never, E = AppError>(
+  ...interceptors: Array<RequestInterceptor<R1> | ResponseInterceptor<E, R2>>
+): { request: RequestInterceptor<R1>; response: ResponseInterceptor<E, R2> } => {
+  const requestInterceptors = interceptors.filter(
+    (i): i is RequestInterceptor<R1> => 'onRequest' in i,
+  );
 
   const responseInterceptors = interceptors.filter(
-    (i): i is ResponseInterceptor => 'onResponse' in i,
+    (i): i is ResponseInterceptor<E, R2> => 'onResponse' in i,
   );
 
   return {
@@ -180,20 +165,20 @@ export const combineInterceptors = (
       onRequest: (request) =>
         requestInterceptors.reduce(
           (effect, interceptor) => effect.pipe(Effect.flatMap(interceptor.onRequest)),
-          Effect.succeed(request),
+          Effect.succeed(request) as Effect.Effect<ApiRequest, never, R1>,
         ),
     },
     response: {
       onResponse: <T>(response: ApiResponse<T>) =>
         responseInterceptors.reduce(
           (effect, interceptor) => effect.pipe(Effect.flatMap(interceptor.onResponse)),
-          Effect.succeed(response),
+          Effect.succeed(response) as Effect.Effect<ApiResponse<T>, E, R2>,
         ),
       onError: (error, request) =>
         responseInterceptors.reduce(
           (effect, interceptor) =>
             effect.pipe(Effect.catchAll((e) => interceptor.onError(e, request))),
-          Effect.fail(error) as Effect.Effect<never, CanvasApiError>,
+          Effect.fail(error) as Effect.Effect<never, E, R2>,
         ),
     },
   };
