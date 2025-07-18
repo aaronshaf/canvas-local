@@ -46,7 +46,7 @@
         "noUnsafeNegation": "error"
       }
     },
-    "ignore": ["**/dist", "**/build", "**/coverage", "**/.next", "**/target"]
+    "ignore": ["**/dist", "**/build", "**/coverage", "**/.next", "**/target", "**/generated"]
   },
   "formatter": {
     "enabled": true,
@@ -55,7 +55,7 @@
     "indentWidth": 2,
     "lineWidth": 100,
     "lineEnding": "lf",
-    "ignore": ["**/dist", "**/build", "**/coverage", "**/.next", "**/target"]
+    "ignore": ["**/dist", "**/build", "**/coverage", "**/.next", "**/target", "**/generated"]
   },
   "javascript": {
     "formatter": {
@@ -69,6 +69,6 @@
     }
   },
   "files": {
-    "ignore": ["**/dist", "**/build", "**/coverage", "**/.next", "**/target", "**/node_modules"]
+    "ignore": ["**/dist", "**/build", "**/coverage", "**/.next", "**/target", "**/node_modules", "**/generated"]
   }
 }
