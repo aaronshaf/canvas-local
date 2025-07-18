@@ -1,3 +1,4 @@
+import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import type { Effect } from 'effect';
 import type { AppError } from '../../core/errors';
 
@@ -65,12 +66,12 @@ export interface ApiClient {
 
 export interface GraphQLClient {
   readonly query: <TData, TVariables = Record<string, unknown>>(
-    query: string,
+    query: string | TypedDocumentNode<TData, TVariables>,
     variables?: TVariables,
   ) => Effect.Effect<TData, AppError>;
 
   readonly mutation: <TData, TVariables = Record<string, unknown>>(
-    mutation: string,
+    mutation: string | TypedDocumentNode<TData, TVariables>,
     variables?: TVariables,
   ) => Effect.Effect<TData, AppError>;
 }
