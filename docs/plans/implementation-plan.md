@@ -68,6 +68,8 @@ This document outlines the step-by-step implementation plan for Canvas Local, a 
 
 #### 3.1 API Client Foundation
 - [ ] Create unified API client interface
+- [ ] Set up GraphQL code generation for type safety
+- [ ] Configure GraphQL codegen with Canvas schema
 - [ ] Implement GraphQL client with error handling
 - [ ] Implement REST client as fallback
 - [ ] Build request/response interceptors
