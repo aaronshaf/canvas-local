@@ -1,7 +1,7 @@
-import { Effect, Context, Layer, pipe } from 'effect'
-import type { UnifiedApiClient } from './types'
-import { GraphQLClientService, GraphQLClientLive } from './graphql-client'
-import { RestClientService, RestClientLive } from './rest-client'
+import { Context, Effect, Layer, pipe } from 'effect';
+import { GraphQLClientLive, GraphQLClientService } from './graphql-client';
+import { RestClientLive, RestClientService } from './rest-client';
+import type { UnifiedApiClient } from './types';
 
 export class UnifiedApiClientService extends Context.Tag('UnifiedApiClientService')<
   UnifiedApiClientService,
@@ -11,16 +11,13 @@ export class UnifiedApiClientService extends Context.Tag('UnifiedApiClientServic
 export const UnifiedApiClientLive = Layer.effect(
   UnifiedApiClientService,
   Effect.gen(function* () {
-    const graphQLClient = yield* GraphQLClientService
-    const restClient = yield* RestClientService
+    const graphQLClient = yield* GraphQLClientService;
+    const restClient = yield* RestClientService;
 
     return {
       ...restClient,
       ...graphQLClient,
       preferGraphQL: true,
-    }
-  })
-).pipe(
-  Layer.provide(GraphQLClientLive),
-  Layer.provide(RestClientLive)
-)
+    };
+  }),
+).pipe(Layer.provide(GraphQLClientLive), Layer.provide(RestClientLive));
