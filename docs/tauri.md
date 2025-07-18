@@ -148,6 +148,138 @@ fn main() {
 }
 ```
 
+## Advanced Topics
+
+### Window Customization
+
+Tauri allows for detailed window customization through the `tauri.conf.json` file or programmatically in Rust.
+
+**`tauri.conf.json` Example:**
+```json
+{
+  "tauri": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "My Tauri App",
+        "width": 800,
+        "height": 600,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": true
+      }
+    ]
+  }
+}
+```
+
+**Rust Example (Creating a new window):**
+```rust
+use tauri::{Manager, WindowBuilder};
+
+fn main() {
+  tauri::Builder::default()
+    .setup(|app| {
+      let handle = app.handle();
+      WindowBuilder::new(
+        handle,
+        "external", /* the unique window label */
+        tauri::WindowUrl::External("https://tauri.app/".parse().unwrap())
+      ).build()?;
+      Ok(())
+    })
+    .run(tauri::generate_context!())
+    .expect("error while running tauri application");
+}
+```
+
+### State Management
+
+Tauri allows you to manage and share state across your application.
+
+**Rust:**
+```rust
+use tauri::State;
+
+struct MyState(String);
+
+#[tauri::command]
+fn my_command(state: State<MyState>) {
+  println!("State: {}", state.0);
+}
+
+fn main() {
+  tauri::Builder::default()
+    .manage(MyState("Hello from state!".into()))
+    .invoke_handler(tauri::generate_handler![my_command])
+    .run(tauri::generate_context!())
+    .expect("error while running tauri application");
+}
+```
+
+### Sidecars
+
+Sidecars allow you to bundle and run external binaries alongside your Tauri application. This is useful for integrating with existing tools or scripts.
+
+**`tauri.conf.json`:**
+```json
+{
+  "tauri": {
+    "bundle": {
+      "externalBin": ["binaries/my-sidecar"]
+    }
+  }
+}
+```
+
+**JavaScript:**
+```javascript
+import { Command } from '@tauri-apps/api/shell';
+
+const command = Command.sidecar('binaries/my-sidecar');
+const { stdout } = await command.execute();
+console.log(stdout);
+```
+
+### Capabilities and Permissions
+
+Capabilities control access to the Tauri API from the frontend. They are configured in `tauri.conf.json` to enhance security by restricting which APIs your webview can access.
+
+**`tauri.conf.json` Example:**
+This configuration enables only the dialog and shell APIs.
+
+```json
+{
+  "tauri": {
+    "allowlist": {
+      "dialog": {
+        "all": true
+      },
+      "shell": {
+        "open": true
+      }
+    }
+  }
+}
+```
+
+For plugins, permissions are used to control access to the plugin's features.
+
+**`tauri.conf.json` Plugin Permissions:**
+This example configures permissions for the SQL plugin.
+
+```json
+{
+  "tauri": {
+    "plugins": {
+      "sql": {
+        "preload": ["sqlite:my-database.db"]
+      }
+    }
+  }
+}
+```
+
 ## Distribution
 
 Tauri simplifies the process of distributing applications by providing a built-in bundler. It can generate installers and packages for all major platforms, including:
