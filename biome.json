@@ -69,6 +69,14 @@
     }
   },
   "files": {
-    "ignore": ["**/dist", "**/build", "**/coverage", "**/.next", "**/target", "**/node_modules", "**/generated"]
+    "ignore": [
+      "**/dist",
+      "**/build",
+      "**/coverage",
+      "**/.next",
+      "**/target",
+      "**/node_modules",
+      "**/generated"
+    ]
   }
 }

@@ -2,8 +2,8 @@ import { Context, Effect, Layer } from 'effect';
 import { UnifiedApiClientLive, UnifiedApiClientService } from '../api/client/unified-client';
 import { NotFoundError } from '../core/errors';
 import type { User } from '../schemas/user';
-import { DatabaseServiceTag, DatabaseServiceLive } from './database';
-import { LoggerServiceTag, LoggerServiceLive } from './logger';
+import { DatabaseServiceLive, DatabaseServiceTag } from './database';
+import { LoggerServiceLive, LoggerServiceTag } from './logger';
 
 export interface UserService {
   readonly getCurrentUser: () => Effect.Effect<User, NotFoundError, never>;
