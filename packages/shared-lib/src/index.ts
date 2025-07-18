@@ -6,8 +6,7 @@ export * from './core/service';
 export * from './core/container';
 
 // Services
-export * from './services/logger';
-export * from './services/database';
+export * from './services';
 
 // Database
 export * from './database/migrations';
@@ -18,3 +17,9 @@ export * from './schemas/user';
 export * from './schemas/course';
 export * from './schemas/assignment';
 export * from './schemas/submission';
+
+// API Client
+export * from './api/client';
+
+// GraphQL Generated Types
+export * from './api/graphql/generated';

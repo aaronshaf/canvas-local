@@ -1,0 +1,60 @@
+/* eslint-disable */
+import * as types from './graphql';
+import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
+
+/**
+ * Map of all GraphQL operations in the project.
+ *
+ * This map has several performance disadvantages:
+ * 1. It is not tree-shakeable, so it will include all operations in the project.
+ * 2. It is not minifiable, so the string of a GraphQL query will be multiple times inside the bundle.
+ * 3. It does not support dead code elimination, so it will add unused operations.
+ *
+ * Therefore it is highly recommended to use the babel or swc plugin for production.
+ * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
+ */
+type Documents = {
+    "query GetAssignments($courseId: ID!, $first: Int = 20, $after: String) {\n  course(id: $courseId) {\n    assignmentsConnection(first: $first, after: $after) {\n      edges {\n        node {\n          id\n          _id\n          name\n          description\n          dueAt\n          pointsPossible\n          state\n          submissionTypes\n          submissionsConnection(first: 1) {\n            edges {\n              node {\n                id\n                _id\n                state\n                score\n                grade\n                submittedAt\n              }\n            }\n          }\n        }\n      }\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n    }\n  }\n}\n\nquery GetAssignment($assignmentId: ID!) {\n  assignment(id: $assignmentId) {\n    id\n    _id\n    name\n    description\n    dueAt\n    pointsPossible\n    state\n    submissionTypes\n    rubric {\n      id\n      _id\n      title\n      pointsPossible\n    }\n    submissionsConnection(first: 1) {\n      edges {\n        node {\n          id\n          _id\n          state\n          score\n          grade\n          submittedAt\n          attempt\n        }\n      }\n    }\n  }\n}": typeof types.GetAssignmentsDocument,
+    "query GetCourses {\n  allCourses {\n    id\n    _id\n    name\n    courseCode\n    term {\n      id\n      _id\n      name\n    }\n    enrollmentsConnection {\n      edges {\n        node {\n          id\n          _id\n          state\n          type\n        }\n      }\n    }\n  }\n}\n\nquery GetCourse($courseId: ID!) {\n  course(id: $courseId) {\n    id\n    _id\n    name\n    courseCode\n    term {\n      id\n      _id\n      name\n    }\n    modulesConnection {\n      edges {\n        node {\n          id\n          _id\n          name\n          position\n        }\n      }\n    }\n  }\n}": typeof types.GetCoursesDocument,
+    "query GetCurrentUser {\n  legacyNode(_id: \"1\", type: User) {\n    ... on User {\n      id\n      _id\n      name\n      email\n      avatarUrl\n      pronouns\n      loginId\n      sisId\n      enrollments {\n        id\n        _id\n        state\n        type\n        course {\n          id\n          _id\n          name\n          courseCode\n        }\n      }\n    }\n  }\n}\n\nquery GetUserProfile($userId: ID!) {\n  legacyNode(_id: $userId, type: User) {\n    ... on User {\n      id\n      _id\n      name\n      email\n      avatarUrl\n      pronouns\n      loginId\n      sisId\n    }\n  }\n}": typeof types.GetCurrentUserDocument,
+};
+const documents: Documents = {
+    "query GetAssignments($courseId: ID!, $first: Int = 20, $after: String) {\n  course(id: $courseId) {\n    assignmentsConnection(first: $first, after: $after) {\n      edges {\n        node {\n          id\n          _id\n          name\n          description\n          dueAt\n          pointsPossible\n          state\n          submissionTypes\n          submissionsConnection(first: 1) {\n            edges {\n              node {\n                id\n                _id\n                state\n                score\n                grade\n                submittedAt\n              }\n            }\n          }\n        }\n      }\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n    }\n  }\n}\n\nquery GetAssignment($assignmentId: ID!) {\n  assignment(id: $assignmentId) {\n    id\n    _id\n    name\n    description\n    dueAt\n    pointsPossible\n    state\n    submissionTypes\n    rubric {\n      id\n      _id\n      title\n      pointsPossible\n    }\n    submissionsConnection(first: 1) {\n      edges {\n        node {\n          id\n          _id\n          state\n          score\n          grade\n          submittedAt\n          attempt\n        }\n      }\n    }\n  }\n}": types.GetAssignmentsDocument,
+    "query GetCourses {\n  allCourses {\n    id\n    _id\n    name\n    courseCode\n    term {\n      id\n      _id\n      name\n    }\n    enrollmentsConnection {\n      edges {\n        node {\n          id\n          _id\n          state\n          type\n        }\n      }\n    }\n  }\n}\n\nquery GetCourse($courseId: ID!) {\n  course(id: $courseId) {\n    id\n    _id\n    name\n    courseCode\n    term {\n      id\n      _id\n      name\n    }\n    modulesConnection {\n      edges {\n        node {\n          id\n          _id\n          name\n          position\n        }\n      }\n    }\n  }\n}": types.GetCoursesDocument,
+    "query GetCurrentUser {\n  legacyNode(_id: \"1\", type: User) {\n    ... on User {\n      id\n      _id\n      name\n      email\n      avatarUrl\n      pronouns\n      loginId\n      sisId\n      enrollments {\n        id\n        _id\n        state\n        type\n        course {\n          id\n          _id\n          name\n          courseCode\n        }\n      }\n    }\n  }\n}\n\nquery GetUserProfile($userId: ID!) {\n  legacyNode(_id: $userId, type: User) {\n    ... on User {\n      id\n      _id\n      name\n      email\n      avatarUrl\n      pronouns\n      loginId\n      sisId\n    }\n  }\n}": types.GetCurrentUserDocument,
+};
+
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ *
+ *
+ * @example
+ * ```ts
+ * const query = graphql(`query GetUser($id: ID!) { user(id: $id) { name } }`);
+ * ```
+ *
+ * The query argument is unknown!
+ * Please regenerate the types.
+ */
+export function graphql(source: string): unknown;
+
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query GetAssignments($courseId: ID!, $first: Int = 20, $after: String) {\n  course(id: $courseId) {\n    assignmentsConnection(first: $first, after: $after) {\n      edges {\n        node {\n          id\n          _id\n          name\n          description\n          dueAt\n          pointsPossible\n          state\n          submissionTypes\n          submissionsConnection(first: 1) {\n            edges {\n              node {\n                id\n                _id\n                state\n                score\n                grade\n                submittedAt\n              }\n            }\n          }\n        }\n      }\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n    }\n  }\n}\n\nquery GetAssignment($assignmentId: ID!) {\n  assignment(id: $assignmentId) {\n    id\n    _id\n    name\n    description\n    dueAt\n    pointsPossible\n    state\n    submissionTypes\n    rubric {\n      id\n      _id\n      title\n      pointsPossible\n    }\n    submissionsConnection(first: 1) {\n      edges {\n        node {\n          id\n          _id\n          state\n          score\n          grade\n          submittedAt\n          attempt\n        }\n      }\n    }\n  }\n}"): (typeof documents)["query GetAssignments($courseId: ID!, $first: Int = 20, $after: String) {\n  course(id: $courseId) {\n    assignmentsConnection(first: $first, after: $after) {\n      edges {\n        node {\n          id\n          _id\n          name\n          description\n          dueAt\n          pointsPossible\n          state\n          submissionTypes\n          submissionsConnection(first: 1) {\n            edges {\n              node {\n                id\n                _id\n                state\n                score\n                grade\n                submittedAt\n              }\n            }\n          }\n        }\n      }\n      pageInfo {\n        hasNextPage\n        endCursor\n      }\n    }\n  }\n}\n\nquery GetAssignment($assignmentId: ID!) {\n  assignment(id: $assignmentId) {\n    id\n    _id\n    name\n    description\n    dueAt\n    pointsPossible\n    state\n    submissionTypes\n    rubric {\n      id\n      _id\n      title\n      pointsPossible\n    }\n    submissionsConnection(first: 1) {\n      edges {\n        node {\n          id\n          _id\n          state\n          score\n          grade\n          submittedAt\n          attempt\n        }\n      }\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query GetCourses {\n  allCourses {\n    id\n    _id\n    name\n    courseCode\n    term {\n      id\n      _id\n      name\n    }\n    enrollmentsConnection {\n      edges {\n        node {\n          id\n          _id\n          state\n          type\n        }\n      }\n    }\n  }\n}\n\nquery GetCourse($courseId: ID!) {\n  course(id: $courseId) {\n    id\n    _id\n    name\n    courseCode\n    term {\n      id\n      _id\n      name\n    }\n    modulesConnection {\n      edges {\n        node {\n          id\n          _id\n          name\n          position\n        }\n      }\n    }\n  }\n}"): (typeof documents)["query GetCourses {\n  allCourses {\n    id\n    _id\n    name\n    courseCode\n    term {\n      id\n      _id\n      name\n    }\n    enrollmentsConnection {\n      edges {\n        node {\n          id\n          _id\n          state\n          type\n        }\n      }\n    }\n  }\n}\n\nquery GetCourse($courseId: ID!) {\n  course(id: $courseId) {\n    id\n    _id\n    name\n    courseCode\n    term {\n      id\n      _id\n      name\n    }\n    modulesConnection {\n      edges {\n        node {\n          id\n          _id\n          name\n          position\n        }\n      }\n    }\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query GetCurrentUser {\n  legacyNode(_id: \"1\", type: User) {\n    ... on User {\n      id\n      _id\n      name\n      email\n      avatarUrl\n      pronouns\n      loginId\n      sisId\n      enrollments {\n        id\n        _id\n        state\n        type\n        course {\n          id\n          _id\n          name\n          courseCode\n        }\n      }\n    }\n  }\n}\n\nquery GetUserProfile($userId: ID!) {\n  legacyNode(_id: $userId, type: User) {\n    ... on User {\n      id\n      _id\n      name\n      email\n      avatarUrl\n      pronouns\n      loginId\n      sisId\n    }\n  }\n}"): (typeof documents)["query GetCurrentUser {\n  legacyNode(_id: \"1\", type: User) {\n    ... on User {\n      id\n      _id\n      name\n      email\n      avatarUrl\n      pronouns\n      loginId\n      sisId\n      enrollments {\n        id\n        _id\n        state\n        type\n        course {\n          id\n          _id\n          name\n          courseCode\n        }\n      }\n    }\n  }\n}\n\nquery GetUserProfile($userId: ID!) {\n  legacyNode(_id: $userId, type: User) {\n    ... on User {\n      id\n      _id\n      name\n      email\n      avatarUrl\n      pronouns\n      loginId\n      sisId\n    }\n  }\n}"];
+
+export function graphql(source: string) {
+  // biome-ignore lint/suspicious/noExplicitAny: generated code
+  return (documents as any)[source] ?? {};
+}
+
+// biome-ignore lint/suspicious/noExplicitAny: generated code
+export type DocumentType<TDocumentNode extends DocumentNode<any, any>> = TDocumentNode extends DocumentNode<  infer TType,  any>  ? TType  : never;

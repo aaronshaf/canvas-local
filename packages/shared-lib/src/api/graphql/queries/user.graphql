@@ -1,0 +1,41 @@
+query GetCurrentUser {
+  legacyNode(_id: "1", type: User) {
+    ... on User {
+      id
+      _id
+      name
+      email
+      avatarUrl
+      pronouns
+      loginId
+      sisId
+      enrollments {
+        id
+        _id
+        state
+        type
+        course {
+          id
+          _id
+          name
+          courseCode
+        }
+      }
+    }
+  }
+}
+
+query GetUserProfile($userId: ID!) {
+  legacyNode(_id: $userId, type: User) {
+    ... on User {
+      id
+      _id
+      name
+      email
+      avatarUrl
+      pronouns
+      loginId
+      sisId
+    }
+  }
+}
