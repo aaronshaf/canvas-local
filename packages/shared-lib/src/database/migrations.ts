@@ -61,7 +61,7 @@ export class MigrationService {
 
     return self.database.transaction((tx) =>
       Effect.gen(function* (_) {
-        yield* _(tx.execute(migration.down));
+        yield* _(tx.execute(migration.down as string));
         yield* _(tx.execute('DELETE FROM migrations WHERE version = ?', [migration.version]));
         yield* _(self.logger.info(`Rolled back migration ${migration.version}: ${migration.name}`));
       }),

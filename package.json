@@ -31,7 +31,8 @@
     "vitest": "^3.2.4"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,md}": ["biome check --apply --no-errors-on-unmatched"]
+    "*.{js,jsx,ts,tsx,json,md}": ["biome check --apply --no-errors-on-unmatched"],
+    "*.{ts,tsx}": ["bash -c 'bun run typecheck'"]
   },
   "engines": {
     "node": ">=20.0.0",
