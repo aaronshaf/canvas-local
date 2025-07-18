@@ -1,13 +1,20 @@
 export const version = '0.1.0';
 
-// Export API client modules (to be implemented)
-// export * from './api';
+// Core modules
+export * from './core/errors';
+export * from './core/service';
+export * from './core/container';
 
-// Export database modules (to be implemented)
-// export * from './database';
+// Services
+export * from './services/logger';
+export * from './services/database';
 
-// Export schema modules (to be implemented)
-// export * from './schemas';
+// Database
+export * from './database/migrations';
+export { migrations } from './database/migrations/index';
 
-// Export utility modules (to be implemented)
-// export * from './utils';
+// Schemas
+export * from './schemas/user';
+export * from './schemas/course';
+export * from './schemas/assignment';
+export * from './schemas/submission';

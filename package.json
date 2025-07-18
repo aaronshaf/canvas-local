@@ -36,5 +36,8 @@
   "engines": {
     "node": ">=20.0.0",
     "bun": ">=1.0.0"
+  },
+  "dependencies": {
+    "@effect/schema": "^0.75.5"
   }
 }
