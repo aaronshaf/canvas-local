@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "noEmit": true,
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+    "jsx": "react-jsx",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@canvas-local/shared-lib": ["../../packages/shared-lib/src"],
+      "@canvas-local/ui-components": ["../../packages/ui-components/src"]
+    }
+  },
+  "include": ["./src/**/*", "./src-tauri/**/*"],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx", "**/tests/**/*"],
+  "references": [
+    { "path": "../../packages/shared-lib" },
+    { "path": "../../packages/ui-components" }
+  ]
+}

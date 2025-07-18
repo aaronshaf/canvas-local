@@ -109,6 +109,7 @@ We will use `husky` to configure git hooks that run checks before commits and pu
 ## 7. Testing Strategy
 
 - **Framework:** We will use `vitest` for unit and integration testing, as it integrates seamlessly with Vite.
+- **Execution:** Tests for `.ts` and `.tsx` files will be run using the `bun test` command.
 - **Coverage:** Test coverage will be collected using `vitest`'s native V8 provider. The 80% minimum coverage threshold will be configured in `vite.config.ts`.
 - **Location:** Test files will be co-located with the source files (`*.test.ts`).
 
