@@ -11,9 +11,11 @@
     "build:app": "bun run --filter canvas-local build",
     "test": "vitest run --workspace vitest.workspace.ts",
     "test:watch": "vitest --workspace vitest.workspace.ts",
-    "lint": "biome check .",
-    "lint:fix": "biome check --apply .",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint --apply .",
     "format": "biome format --write .",
+    "check": "biome check .",
+    "check:fix": "biome check --apply .",
     "typecheck": "bun run --filter '*' typecheck",
     "prepare": "husky"
   },
@@ -31,7 +33,7 @@
     "vitest": "^3.2.4"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,md}": ["biome check --apply --no-errors-on-unmatched"],
+    "*.{js,jsx,ts,tsx,json,md}": ["biome lint --apply --no-errors-on-unmatched"],
     "*.{ts,tsx}": ["bash -c 'bun run typecheck'"]
   },
   "engines": {
