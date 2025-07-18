@@ -103,3 +103,9 @@ export class MockDatabaseService extends DatabaseService {
 
 export const makeMockDatabaseLayer = (config: DatabaseConfig): Layer.Layer<DatabaseService> =>
   Layer.succeed(DatabaseServiceTag, new MockDatabaseService(config));
+
+export const DatabaseServiceLive = makeMockDatabaseLayer({
+  path: ':memory:',
+  enableWAL: true,
+  busyTimeout: 5000,
+});

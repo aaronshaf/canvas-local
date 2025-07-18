@@ -16,13 +16,21 @@
     "dev": "tsc --watch",
     "test": "vitest",
     "test:watch": "vitest --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "codegen": "graphql-codegen --config codegen.ts",
+    "codegen:watch": "graphql-codegen --config codegen.ts --watch"
   },
   "dependencies": {
     "@effect/schema": "^0.75.5",
-    "effect": "^3.16.16"
+    "@urql/core": "^5.2.0",
+    "effect": "^3.16.16",
+    "graphql": "^16.11.0"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.7",
+    "@graphql-codegen/typed-document-node": "^5.1.2",
+    "@graphql-codegen/typescript": "^4.1.6",
+    "@graphql-codegen/typescript-operations": "^4.6.1",
     "@types/node": "^20.14.0",
     "typescript": "^5.5.4",
     "vitest": "^1.6.0"
