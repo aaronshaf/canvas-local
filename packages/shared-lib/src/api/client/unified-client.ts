@@ -1,4 +1,4 @@
-import { Context, Effect, Layer, pipe } from 'effect';
+import { Context, Effect, Layer } from 'effect';
 import { GraphQLClientLive, GraphQLClientService } from './graphql-client';
 import { RestClientLive, RestClientService } from './rest-client';
 import type { UnifiedApiClient } from './types';

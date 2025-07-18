@@ -6,14 +6,8 @@ import {
   NetworkError,
   RateLimitError,
 } from '../../core/errors';
-import {
-  combineInterceptors,
-  loggingInterceptor,
-  rateLimitInterceptor,
-  retryInterceptor,
-} from './interceptors';
 import { withRateLimitRetry, withRetry } from './retry';
-import type { ApiClient, ApiRequest, ApiResponse, PaginatedResponse } from './types';
+import type { ApiClient, ApiRequest, ApiResponse } from './types';
 
 export class RestClientService extends Context.Tag('RestClientService')<
   RestClientService,
@@ -59,9 +53,10 @@ const parseLinkHeader = (
   let match: RegExpExecArray | null = linkPattern.exec(linkHeader);
 
   while (match !== null) {
+    const url = match[1];
     const rel = match[2];
-    if (rel) {
-      links[rel] = match[1];
+    if (rel && url) {
+      links[rel] = url;
     }
     match = linkPattern.exec(linkHeader);
   }
@@ -125,12 +120,6 @@ const handleHttpError = (response: Response, endpoint: string): Effect.Effect<ne
 };
 
 export const makeRestClient = (config: RestClientConfig): ApiClient => {
-  const interceptors = combineInterceptors(
-    loggingInterceptor,
-    rateLimitInterceptor(),
-    retryInterceptor(),
-  );
-
   const rawRequest = <T>(req: ApiRequest): Effect.Effect<ApiResponse<T>, AppError> =>
     Effect.tryPromise({
       try: async () => {
@@ -185,14 +174,7 @@ export const makeRestClient = (config: RestClientConfig): ApiClient => {
     });
 
   const request = <T>(req: ApiRequest): Effect.Effect<ApiResponse<T>, AppError> =>
-    pipe(
-      interceptors.request.onRequest(req),
-      Effect.flatMap(rawRequest<T>),
-      Effect.flatMap(interceptors.response.onResponse),
-      Effect.catchAll((error) => interceptors.response.onError(error, req)),
-      withRetry,
-      withRateLimitRetry,
-    );
+    pipe(rawRequest<T>(req), withRetry, withRateLimitRetry);
 
   return {
     request,

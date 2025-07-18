@@ -3,7 +3,7 @@ import type { AppError } from '../../core/errors';
 
 export interface RetryPolicy {
   readonly shouldRetry: (error: AppError) => boolean;
-  readonly schedule: Schedule.Schedule<void, AppError>;
+  readonly schedule: Schedule.Schedule<Duration.Duration, AppError>;
 }
 
 export const defaultRetryPolicy: RetryPolicy = {
@@ -26,7 +26,7 @@ export const defaultRetryPolicy: RetryPolicy = {
     Schedule.exponential(Duration.seconds(1)),
     Schedule.intersect(Schedule.recurs(3)),
     Schedule.addDelay(() => Duration.millis(Math.random() * 1000)), // Add jitter
-  ),
+  ) as unknown as Schedule.Schedule<Duration.Duration, AppError>,
 };
 
 export const withRetry = <R, E extends AppError, A>(
@@ -46,11 +46,13 @@ export const withRateLimitRetry = <R, E extends AppError, A>(
   effect.pipe(
     Effect.catchIf(
       (error): error is E => error._tag === 'RateLimitError',
-      (error) =>
-        pipe(
-          Effect.logWarning(`Rate limit hit, waiting ${error.retryAfter || 60} seconds`),
-          Effect.flatMap(() => Effect.sleep(Duration.seconds(error.retryAfter || 60))),
+      (error) => {
+        const rateLimitError = error as AppError & { _tag: 'RateLimitError'; retryAfter?: number };
+        return pipe(
+          Effect.logWarning(`Rate limit hit, waiting ${rateLimitError.retryAfter || 60} seconds`),
+          Effect.flatMap(() => Effect.sleep(Duration.seconds(rateLimitError.retryAfter || 60))),
           Effect.flatMap(() => effect),
-        ),
+        );
+      },
     ),
   );
