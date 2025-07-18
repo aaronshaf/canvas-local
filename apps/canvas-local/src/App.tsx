@@ -1,39 +1,30 @@
-import { invoke } from '@tauri-apps/api/core';
-import { useState } from 'react';
+import { CanvasThemeProvider, LoginForm } from '@canvas-local/ui-components';
+import { useAuth } from './contexts/AuthContext';
 import './App.css';
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState('');
-  const [name, setName] = useState('');
+  const { authState, login, logout, isLoading, error } = useAuth();
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke('greet', { name }));
+  if (!authState.isAuthenticated) {
+    return (
+      <CanvasThemeProvider>
+        <LoginForm onLogin={login} isLoading={isLoading} error={error} />
+      </CanvasThemeProvider>
+    );
   }
 
   return (
-    <main className="container">
-      <h1>Canvas Local</h1>
+    <CanvasThemeProvider>
+      <main className="container">
+        <h1>Canvas Local</h1>
+        <p>Welcome, {authState.user?.name || 'User'}!</p>
+        <p>Connected to: {authState.domain}</p>
 
-      <p>Welcome to Canvas Local - Your desktop client for Canvas LMS</p>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-
-      <p>{greetMsg}</p>
-    </main>
+        <button type="button" onClick={logout} disabled={isLoading}>
+          {isLoading ? 'Logging out...' : 'Logout'}
+        </button>
+      </main>
+    </CanvasThemeProvider>
   );
 }
 
