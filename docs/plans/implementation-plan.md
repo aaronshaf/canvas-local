@@ -22,6 +22,10 @@ This document outlines the step-by-step implementation plan for Canvas Local, a 
 - [ ] Set up Husky for git hooks
 - [ ] Configure lint-staged for pre-commit checks
 - [ ] Set up TypeScript configuration for monorepo
+  - [ ] Enable strict mode
+  - [ ] Configure no-explicit-any rule
+  - [ ] Configure no-implicit-any rule
+  - [ ] Add pre-commit hook to check for any types
 - [ ] Configure Vitest for testing framework
 - [ ] Set up GitHub Actions CI/CD pipeline
 
@@ -68,6 +72,8 @@ This document outlines the step-by-step implementation plan for Canvas Local, a 
 
 #### 3.1 API Client Foundation
 - [ ] Create unified API client interface
+- [ ] Set up GraphQL code generation for type safety
+- [ ] Configure GraphQL codegen with Canvas schema
 - [ ] Implement GraphQL client with error handling
 - [ ] Implement REST client as fallback
 - [ ] Build request/response interceptors
