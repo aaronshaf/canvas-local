@@ -18,8 +18,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "test": "vitest",
-    "test:watch": "vitest --watch",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
     "typecheck": "tsc --noEmit",
     "codegen": "graphql-codegen --config codegen.ts",
     "codegen:watch": "graphql-codegen --config codegen.ts --watch"
@@ -41,7 +41,6 @@
     "@graphql-codegen/typescript-operations": "^4.6.1",
     "@tanstack/router-plugin": "^1.128.4",
     "@types/node": "^20.14.0",
-    "typescript": "^5.5.4",
-    "vitest": "^1.6.0"
+    "typescript": "^5.5.4"
   }
 }

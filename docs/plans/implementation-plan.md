@@ -3,6 +3,14 @@
 ## Overview
 This document outlines the step-by-step implementation plan for Panda, a desktop application for Canvas LMS built with Tauri, React, TypeScript, and Rust.
 
+### Technology Stack
+- **Package Manager & Runtime**: Bun (not npm/yarn/pnpm)
+- **Testing Framework**: Bun test (not Vitest/Jest)  
+- **Build Tool**: Vite for bundling, Bun for development
+- **GraphQL Client**: graphql-request with TanStack Query
+- **Frontend**: React + TypeScript + Tauri (no .js/.jsx files)
+- **Backend**: Rust + SQLite
+
 ## Implementation Phases
 
 ### Phase 1: Project Foundation (Week 1-2)
@@ -26,7 +34,7 @@ This document outlines the step-by-step implementation plan for Panda, a desktop
   - [ ] Configure no-explicit-any rule
   - [ ] Configure no-implicit-any rule
   - [ ] Add pre-commit hook to check for any types
-- [ ] Configure Vitest for testing framework
+- [ ] Configure Bun for testing framework (bun test)
 - [ ] Set up GitHub Actions CI/CD pipeline
 - [ ] Configure file size limits in pre-commit hooks
   - [ ] Warning at 500 lines per file
@@ -47,7 +55,7 @@ This document outlines the step-by-step implementation plan for Panda, a desktop
 - [ ] Create basic Rust project structure
 
 #### 1.4 Frontend Foundation
-- [ ] Set up Vite + React + TypeScript
+- [ ] Set up Bun + React + TypeScript
 - [ ] Configure path aliases and module resolution
 - [ ] Install and configure Instructure UI
 - [ ] Set up basic routing structure
@@ -87,8 +95,8 @@ This document outlines the step-by-step implementation plan for Panda, a desktop
   - [ ] Configure codegen.yml with Canvas GraphQL schema
   - [ ] Generate TypeScript types from GraphQL operations
   - [ ] Set up automated type generation in build process
-  - [ ] Create typed GraphQL hooks and operations
-- [ ] Implement GraphQL client with error handling
+  - [ ] Create typed GraphQL hooks and operations using graphql-request and TanStack Query
+- [ ] Implement GraphQL client with error handling using graphql-request
 - [ ] Implement REST client as fallback
 - [ ] Build request/response interceptors
 - [ ] Add rate limiting and retry logic

@@ -1,7 +1,22 @@
 import { defineWorkspace } from 'vitest/config';
 
 export default defineWorkspace([
-  './packages/shared-lib/vitest.config.ts',
-  './packages/ui-components/vitest.config.ts',
-  './apps/canvas-local/vitest.config.ts',
+  {
+    test: {
+      exclude: ['**/tests/e2e/**', '**/node_modules/**', '**/dist/**'],
+    },
+    extends: './packages/shared-lib/vitest.config.ts',
+  },
+  {
+    test: {
+      exclude: ['**/tests/e2e/**', '**/node_modules/**', '**/dist/**'],
+    },
+    extends: './packages/ui-components/vitest.config.ts',
+  },
+  {
+    test: {
+      exclude: ['**/tests/e2e/**', '**/node_modules/**', '**/dist/**'],
+    },
+    extends: './apps/canvas-local/vitest.config.ts',
+  },
 ]);

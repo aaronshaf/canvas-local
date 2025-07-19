@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "Running pre-push checks..."
+
+# Quick CI validation
+echo "🔍 Running quick CI checks..."
+bun run ci:quick
+
+echo "✅ Pre-push checks passed!"
+echo "💡 Tip: Run 'bun run ci:validate' for full CI validation"

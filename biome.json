@@ -37,6 +37,7 @@
         "noDuplicateObjectKeys": "error",
         "noDuplicateParameters": "error",
         "noEmptyBlockStatements": "error",
+        "noExplicitAny": "error",
         "noFallthroughSwitchClause": "error",
         "noFunctionAssign": "error",
         "noGlobalAssign": "error",
@@ -69,6 +70,7 @@
     }
   },
   "files": {
+    "include": ["**/*.ts", "**/*.tsx"],
     "ignore": [
       "**/dist",
       "**/build",
