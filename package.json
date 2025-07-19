@@ -25,6 +25,7 @@
     "filesize": "bash -c 'find . -name \"*.ts\" -o -name \"*.tsx\" | grep -v node_modules | grep -v dist | grep -v build | grep -v coverage | grep -v generated | while read file; do lines=$(wc -l < \"$file\"); if [ \"$lines\" -gt 700 ]; then echo \"ERROR: $file has $lines lines (max 700 allowed)\"; exit 1; elif [ \"$lines\" -gt 500 ]; then echo \"WARNING: $file has $lines lines (recommended max 500)\"; fi; done'",
     "codegen": "bun run --filter '@canvas-local/shared-lib' codegen",
     "codegen:watch": "bun run --filter '@canvas-local/shared-lib' codegen:watch",
+    "tauri": "cd apps/canvas-local && bun tauri",
     "prepare": "husky"
   },
   "devDependencies": {
