@@ -9,7 +9,7 @@ pub struct User {
     pub email: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct AuthResult {
     pub user: User,
     pub domain: String,
@@ -81,7 +81,7 @@ pub async fn authenticate(
 #[tauri::command]
 pub async fn store_auth_token(
     domain: String,
-    api_key: String,
+    _api_key: String,
 ) -> Result<(), String> {
     // In a real implementation, you would use the OS keychain
     // For now, we'll just acknowledge the request

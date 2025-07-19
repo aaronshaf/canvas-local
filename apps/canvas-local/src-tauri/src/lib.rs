@@ -13,7 +13,7 @@ fn greet(name: &str) -> String {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .manage(AuthStateManager::new(AuthState::default()))
+        .manage(Mutex::new(AuthState::default()))
         .invoke_handler(tauri::generate_handler![
             greet,
             auth::authenticate,
