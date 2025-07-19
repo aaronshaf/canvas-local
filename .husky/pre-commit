@@ -16,7 +16,7 @@ bun run lint-staged
 
 # Run tests only where they exist
 echo "Running tests..."
-cd apps/canvas-local && bun test --run
+cd apps/panda && bun test --run
 
 # Check file size limits (500 line warning, 700 line error)
 echo "Checking file size limits..."
