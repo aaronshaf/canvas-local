@@ -20,11 +20,7 @@ export interface LoginFormProps {
   error?: string | null;
 }
 
-export const LoginForm: FC<LoginFormProps> = ({
-  onLogin,
-  isLoading = false,
-  error = null,
-}) => {
+export const LoginForm: FC<LoginFormProps> = ({ onLogin, isLoading = false, error = null }) => {
   const [domain, setDomain] = useState('');
   const [email, setEmail] = useState('');
   const [apiKey, setApiKey] = useState('');

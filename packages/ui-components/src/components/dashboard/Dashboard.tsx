@@ -199,18 +199,18 @@ export const Dashboard: FC<DashboardProps> = ({
                       );
                     }
                     return (
-                        <Link
-                          href="#"
-                          isWithinText={false}
-                          renderIcon={IconArrowOpenStartLine}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            onNavigate?.('dashboard');
-                          }}
-                        >
-                          <TruncateText>Dashboard</TruncateText>
-                        </Link>
-                      );
+                      <Link
+                        href="#"
+                        isWithinText={false}
+                        renderIcon={IconArrowOpenStartLine}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          onNavigate?.('dashboard');
+                        }}
+                      >
+                        <TruncateText>Dashboard</TruncateText>
+                      </Link>
+                    );
                   }}
                 </Responsive>
               </View>

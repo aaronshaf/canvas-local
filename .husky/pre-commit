@@ -1,6 +1,19 @@
 # Run lint-staged for formatting and linting
 bun run lint-staged
 
+# TODO: Enable ast-grep check once existing 'as' assertions are refactored
+# Run ast-grep to check for forbidden 'as' typecasting
+# echo "Checking for forbidden 'as' typecasting..."
+# if command -v ast-grep &> /dev/null; then
+#   ast-grep scan --rule .ast-grep/rules/no-as-typecasting.yml
+#   if [ $? -ne 0 ]; then
+#     echo "ERROR: Found forbidden 'as' typecasting. Use proper typing instead."
+#     exit 1
+#   fi
+# else
+#   echo "WARNING: ast-grep not installed. Install with: brew install ast-grep"
+# fi
+
 # Run tests only where they exist
 echo "Running tests..."
 cd apps/canvas-local && bun test --run

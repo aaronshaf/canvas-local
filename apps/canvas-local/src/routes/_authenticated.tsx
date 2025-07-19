@@ -222,20 +222,18 @@ function AuthenticatedLayout() {
                       );
                     }
                     return (
-                        <Link
-                          href="#"
-                          isWithinText={false}
-                          renderIcon={IconArrowOpenStartLine}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            navigate({ to: '..' });
-                          }}
-                        >
-                          <TruncateText>
-                            {breadcrumbs[breadcrumbs.length - 1] || 'Back'}
-                          </TruncateText>
-                        </Link>
-                      );
+                      <Link
+                        href="#"
+                        isWithinText={false}
+                        renderIcon={IconArrowOpenStartLine}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          navigate({ to: '..' });
+                        }}
+                      >
+                        <TruncateText>{breadcrumbs[breadcrumbs.length - 1] || 'Back'}</TruncateText>
+                      </Link>
+                    );
                   }}
                 </Responsive>
               </View>

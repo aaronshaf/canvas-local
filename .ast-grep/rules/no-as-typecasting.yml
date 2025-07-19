@@ -1,0 +1,10 @@
+id: no-as-typecasting
+language: typescript
+message: Type assertions with 'as' are not allowed (except 'as const' or 'as unknown'). Use proper typing instead.
+severity: error
+rule:
+  pattern: $EXPR as $TYPE
+  not:
+    any:
+      - pattern: $EXPR as const
+      - pattern: $EXPR as unknown
