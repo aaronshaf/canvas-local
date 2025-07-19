@@ -26,6 +26,7 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "allowUnreachableCode": false,
+    "noImplicitAny": true,
     "skipLibCheck": true,
     "incremental": true,
     "composite": true

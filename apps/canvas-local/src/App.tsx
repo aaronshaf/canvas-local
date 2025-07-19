@@ -95,13 +95,13 @@ function App() {
         recentActivities={activities}
         isLoading={isLoading}
         onLogout={logout}
-        onNavigate={(section) => {
+        onNavigate={(section: string) => {
           console.log('Navigate to:', section);
         }}
-        onCourseClick={(courseId) => {
+        onCourseClick={(courseId: string) => {
           console.log('Open course:', courseId);
         }}
-        onActivityClick={(activity) => {
+        onActivityClick={(activity: unknown) => {
           console.log('Open activity:', activity);
         }}
       />

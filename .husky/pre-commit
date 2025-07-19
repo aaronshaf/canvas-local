@@ -1,1 +1,18 @@
-bun lint-staged
+# Run lint-staged for formatting and linting
+bun run lint-staged
+
+# Run tests only where they exist
+echo "Running tests..."
+cd apps/canvas-local && bun test --run
+
+# Check file size limits (500 line warning, 700 line error)
+echo "Checking file size limits..."
+find . -name "*.ts" -o -name "*.tsx" | grep -v node_modules | grep -v dist | grep -v build | grep -v coverage | grep -v generated | while read file; do
+  lines=$(wc -l < "$file")
+  if [ "$lines" -gt 700 ]; then
+    echo "ERROR: $file has $lines lines (max 700 allowed)"
+    exit 1
+  elif [ "$lines" -gt 500 ]; then
+    echo "WARNING: $file has $lines lines (recommended max 500)"
+  fi
+done
