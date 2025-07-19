@@ -37,7 +37,7 @@ Frontend (TypeScript) ← Tauri Response ← Rust Proxy
 ```
 panda/
 ├── apps/
-│   └── canvas-local/          # Main Tauri application
+│   └── panda/                 # Main Tauri application
 │       ├── src/               # React frontend
 │       └── src-tauri/         # Rust backend (proxy only)
 ├── packages/

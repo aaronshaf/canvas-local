@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { View, Heading, Grid } from '@instructure/ui';
-import { CourseCard } from '@canvas-local/ui-components';
+import { CourseCard } from '@panda/ui-components';
 import { useEffectQuery } from '../hooks/useEffectQuery';
-import { CourseService } from '@canvas-local/shared-lib/services';
+import { CourseService, type CourseStats } from '@panda/shared-lib';
 
 export const Route = createFileRoute('/_authenticated/courses')({
   component: CoursesPage,
@@ -11,7 +11,7 @@ export const Route = createFileRoute('/_authenticated/courses')({
 function CoursesPage() {
   const navigate = Route.useNavigate();
 
-  const { data: courses = [], isLoading } = useEffectQuery({
+  const { data: courses = [], isLoading } = useEffectQuery<CourseStats[], Error>({
     queryKey: ['courses'],
     queryFn: CourseService.getCoursesWithStats,
   });

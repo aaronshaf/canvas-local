@@ -1,12 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Heading } from '@instructure/ui-heading';
-import {
-  DashboardContent,
-  type ActivityItem,
-  type ActivityType,
-} from '@canvas-local/ui-components';
+import { DashboardContent, type ActivityItem, type ActivityType } from '@panda/ui-components';
 import { useAuth } from '../hooks/useAuth';
-import { CourseService, ActivityService, type Activity } from '@canvas-local/shared-lib/services';
+import { CourseService, ActivityService, type CourseStats, type Activity } from '@panda/shared-lib';
 import { useEffectQuery } from '../hooks/useEffectQuery';
 
 export const Route = createFileRoute('/_authenticated/dashboard')({
@@ -17,21 +13,23 @@ function DashboardPage() {
   const { authState } = useAuth();
   const navigate = Route.useNavigate();
 
-  const { data: courses = [], isLoading: coursesLoading } = useEffectQuery({
+  const { data: courses = [], isLoading: coursesLoading } = useEffectQuery<CourseStats[], Error>({
     queryKey: ['courses'],
     queryFn: CourseService.getCoursesWithStats,
     enabled: authState.isAuthenticated,
   });
 
-  const { data: activities = [], isLoading: activitiesLoading } = useEffectQuery({
-    queryKey: ['activities', 'recent'],
-    queryFn: ActivityService.getRecentActivities,
-    enabled: authState.isAuthenticated,
-    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
-  });
+  const { data: activities = [], isLoading: activitiesLoading } = useEffectQuery<Activity[], Error>(
+    {
+      queryKey: ['activities', 'recent'],
+      queryFn: ActivityService.getRecentActivities,
+      enabled: authState.isAuthenticated,
+      refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
+    },
+  );
 
   // Transform Activity to ActivityItem
-  const activityItems: ActivityItem[] = activities.map((activity: Activity) => ({
+  const activityItems: ActivityItem[] = activities.map((activity) => ({
     id: activity.id,
     type: activity.type as ActivityType,
     title: activity.title,

@@ -70,7 +70,7 @@ bun tauri build --target aarch64-apple-darwin   # macOS Apple Silicon
 ## Architecture
 
 ### Monorepo Structure
-- `apps/canvas-local/` - Main Tauri desktop application
+- `apps/panda/` - Main Tauri desktop application
   - `src-tauri/` - Rust backend code (secure proxy layer only)
   - `src/` - React frontend code
 - `packages/shared-lib/` - Shared business logic, API clients, and schemas

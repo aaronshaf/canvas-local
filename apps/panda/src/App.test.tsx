@@ -8,7 +8,7 @@ describe('App', () => {
   });
 
   // TODO: Add proper tests once we have a better testing strategy for:
-  // 1. Mocking @canvas-local/ui-components
+  // 1. Mocking @panda/ui-components
   // 2. Mocking AuthContext
   // 3. Testing Tauri integration
 });

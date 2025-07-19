@@ -51,7 +51,7 @@ run_check "Unit Tests with Coverage" "bun test --coverage"
 run_check "File Size Check" "bun run filesize"
 
 # 8. Playwright tests (if app is built)
-if [ -d "apps/canvas-local/dist" ]; then
+if [ -d "apps/panda/dist" ]; then
     echo -e "\n${YELLOW}Running Playwright tests...${NC}"
     # Install browsers if needed
     bunx playwright install --with-deps chromium
@@ -63,7 +63,7 @@ fi
 
 # 9. Try a test Tauri build (quick check)
 echo -e "\n${YELLOW}Checking Tauri setup...${NC}"
-cd apps/canvas-local
+cd apps/panda
 if command -v cargo &> /dev/null; then
     run_check "Cargo Check" "cd src-tauri && cargo check"
 else

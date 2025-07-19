@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { View, Heading, Tabs, Text } from '@instructure/ui';
 import { useEffectQuery } from '../hooks/useEffectQuery';
-import { CourseService } from '@canvas-local/shared-lib/services';
+import { CourseService, type CourseStats } from '@panda/shared-lib';
 import { Effect } from 'effect';
 
 export const Route = createFileRoute('/_authenticated/courses/$courseId')({
@@ -11,7 +11,7 @@ export const Route = createFileRoute('/_authenticated/courses/$courseId')({
 function CourseDetailPage() {
   const { courseId } = Route.useParams();
 
-  const { data: course, isLoading } = useEffectQuery({
+  const { data: course, isLoading } = useEffectQuery<CourseStats | undefined, Error>({
     queryKey: ['course', courseId],
     queryFn: () =>
       Effect.tryPromise({

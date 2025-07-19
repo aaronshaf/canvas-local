@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Canvas Local App', () => {
+test.describe('Panda App', () => {
   test('should load the application', async ({ page }) => {
     // In CI, we can't run the actual Tauri app yet
     if (process.env.CI) {
@@ -14,7 +14,7 @@ test.describe('Canvas Local App', () => {
     await page.waitForSelector('body');
 
     // Check that the app title is correct
-    await expect(page).toHaveTitle(/Canvas Local/);
+    await expect(page).toHaveTitle(/Panda/);
   });
 
   test('should display the main interface', async ({ page }) => {

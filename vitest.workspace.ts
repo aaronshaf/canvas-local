@@ -17,6 +17,6 @@ export default defineWorkspace([
     test: {
       exclude: ['**/tests/e2e/**', '**/node_modules/**', '**/dist/**'],
     },
-    extends: './apps/canvas-local/vitest.config.ts',
+    extends: './apps/panda/vitest.config.ts',
   },
 ]);
