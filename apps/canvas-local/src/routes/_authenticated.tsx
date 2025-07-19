@@ -23,11 +23,12 @@ import {
 } from '@instructure/ui-icons';
 import { useNavigate } from '@tanstack/react-router';
 import { useAuth } from '../hooks/useAuth';
+import type { RouterContext } from '../types/router';
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: ({ context }) => {
     // If not authenticated, redirect to login
-    const auth = (context as any).auth;
+    const auth = (context as RouterContext).auth;
     if (!auth || !auth.authState.isAuthenticated) {
       throw redirect({
         to: '/',

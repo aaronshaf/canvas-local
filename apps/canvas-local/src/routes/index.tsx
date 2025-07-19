@@ -2,11 +2,12 @@ import React from 'react';
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { LoginForm } from '@canvas-local/ui-components';
 import { useAuth } from '../hooks/useAuth';
+import type { RouterContext } from '../types/router';
 
 export const Route = createFileRoute('/')({
   beforeLoad: ({ context }) => {
     // If already authenticated, redirect to dashboard
-    const auth = (context as any).auth;
+    const auth = (context as RouterContext).auth;
     if (auth?.authState.isAuthenticated) {
       throw redirect({
         to: '/dashboard',
