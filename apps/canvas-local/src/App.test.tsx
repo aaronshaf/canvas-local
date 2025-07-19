@@ -1,10 +1,9 @@
-import { render } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, test } from 'bun:test';
 
 // For now, we'll skip the App component tests since they require complex mocking
 // This is a placeholder to ensure tests pass
 describe('App', () => {
-  it('should have tests', () => {
+  test('should have tests', () => {
     expect(true).toBe(true);
   });
 

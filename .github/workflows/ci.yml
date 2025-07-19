@@ -94,7 +94,6 @@ jobs:
 
       - name: Run unit tests with coverage
         run: bun test --coverage
-        continue-on-error: true  # Coverage has issues with vitest
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
