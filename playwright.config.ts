@@ -71,10 +71,12 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'bun tauri dev',
-    url: 'http://127.0.0.1:1420',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120000,
-  },
+  webServer: process.env.CI
+    ? undefined
+    : {
+        command: 'bun tauri dev',
+        url: 'http://127.0.0.1:1420',
+        reuseExistingServer: true,
+        timeout: 120000,
+      },
 });
