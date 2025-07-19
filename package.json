@@ -9,14 +9,18 @@
     "build": "bun run build:packages && bun run build:app",
     "build:packages": "bun run --filter './packages/*' build",
     "build:app": "bun run --filter canvas-local build",
-    "test": "vitest run --workspace vitest.workspace.ts",
-    "test:watch": "vitest --workspace vitest.workspace.ts",
+    "test": "bun run --filter '*' test",
+    "test:watch": "bun run --filter '*' test --watch",
+    "test:coverage": "bun run --filter '*' test --coverage",
+    "playwright": "bun run --filter '*' playwright",
+    "type-check": "bun run --filter '*' typecheck",
+    "typecheck": "bun run --filter '*' typecheck",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
     "format": "biome format --write .",
     "check": "biome check .",
     "check:fix": "biome check --apply .",
-    "typecheck": "bun run --filter '*' typecheck",
+    "filesize": "bash -c 'find . -name \"*.ts\" -o -name \"*.tsx\" | grep -v node_modules | grep -v dist | grep -v build | grep -v coverage | grep -v generated | while read file; do lines=$(wc -l < \"$file\"); if [ \"$lines\" -gt 700 ]; then echo \"ERROR: $file has $lines lines (max 700 allowed)\"; exit 1; elif [ \"$lines\" -gt 500 ]; then echo \"WARNING: $file has $lines lines (recommended max 500)\"; fi; done'",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -33,11 +37,11 @@
     "vitest": "^3.2.4"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,md}": [
+    "*.{ts,tsx}": [
       "biome format --write",
-      "biome lint --apply --no-errors-on-unmatched"
-    ],
-    "*.{ts,tsx}": ["bash -c 'bun run typecheck'"]
+      "biome lint --apply --no-errors-on-unmatched",
+      "bash -c 'bun run typecheck'"
+    ]
   },
   "engines": {
     "node": ">=20.0.0",
