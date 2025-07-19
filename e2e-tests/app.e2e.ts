@@ -2,6 +2,12 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Canvas Local App', () => {
   test('should load the application', async ({ page }) => {
+    // In CI, we can't run the actual Tauri app yet
+    if (process.env.CI) {
+      test.skip();
+      return;
+    }
+
     await page.goto('/');
 
     // Wait for the app to load
@@ -12,6 +18,12 @@ test.describe('Canvas Local App', () => {
   });
 
   test('should display the main interface', async ({ page }) => {
+    // In CI, we can't run the actual Tauri app yet
+    if (process.env.CI) {
+      test.skip();
+      return;
+    }
+
     await page.goto('/');
 
     // Wait for the app to load
@@ -23,6 +35,12 @@ test.describe('Canvas Local App', () => {
   });
 
   test('should be responsive', async ({ page }) => {
+    // In CI, we can't run the actual Tauri app yet
+    if (process.env.CI) {
+      test.skip();
+      return;
+    }
+
     await page.goto('/');
 
     // Test mobile viewport

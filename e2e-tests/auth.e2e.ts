@@ -2,6 +2,12 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Authentication', () => {
   test('should show login form when not authenticated', async ({ page }) => {
+    // In CI, we can't run the actual Tauri app yet
+    if (process.env.CI) {
+      test.skip();
+      return;
+    }
+
     await page.goto('/');
 
     // Wait for the app to load
@@ -14,6 +20,12 @@ test.describe('Authentication', () => {
   });
 
   test('should handle OAuth flow', async ({ page }) => {
+    // In CI, we can't run the actual Tauri app yet
+    if (process.env.CI) {
+      test.skip();
+      return;
+    }
+
     await page.goto('/');
 
     // Wait for the app to load
@@ -26,6 +38,12 @@ test.describe('Authentication', () => {
   });
 
   test('should handle API token authentication', async ({ page }) => {
+    // In CI, we can't run the actual Tauri app yet
+    if (process.env.CI) {
+      test.skip();
+      return;
+    }
+
     await page.goto('/');
 
     // Wait for the app to load
