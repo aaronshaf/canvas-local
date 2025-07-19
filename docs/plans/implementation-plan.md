@@ -28,6 +28,16 @@ This document outlines the step-by-step implementation plan for Canvas Local, a 
   - [ ] Add pre-commit hook to check for any types
 - [ ] Configure Vitest for testing framework
 - [ ] Set up GitHub Actions CI/CD pipeline
+- [ ] Configure file size limits in pre-commit hooks
+  - [ ] Warning at 500 lines per file
+  - [ ] Block commits over 700 lines per file
+- [ ] Set up test coverage requirements
+  - [ ] Minimum 1% coverage requirement
+  - [ ] Configure pre-commit/pre-push hooks with bun test
+- [ ] Set up Playwright for integration testing
+  - [ ] Configure test environments
+  - [ ] Set up browser automation
+  - [ ] Create initial test structure
 
 #### 1.3 Tauri Application Scaffold
 - [ ] Initialize Tauri application in `apps/canvas-local`
@@ -72,8 +82,12 @@ This document outlines the step-by-step implementation plan for Canvas Local, a 
 
 #### 3.1 API Client Foundation
 - [ ] Create unified API client interface
-- [ ] Set up GraphQL code generation for type safety
-- [ ] Configure GraphQL codegen with Canvas schema
+- [ ] Set up GraphQL Code Generation (GraphQL Codegen)
+  - [ ] Install and configure @graphql-codegen/cli
+  - [ ] Configure codegen.yml with Canvas GraphQL schema
+  - [ ] Generate TypeScript types from GraphQL operations
+  - [ ] Set up automated type generation in build process
+  - [ ] Create typed GraphQL hooks and operations
 - [ ] Implement GraphQL client with error handling
 - [ ] Implement REST client as fallback
 - [ ] Build request/response interceptors
@@ -189,24 +203,86 @@ This document outlines the step-by-step implementation plan for Canvas Local, a 
 - [ ] Ensure WCAG 2.1 AA compliance
 - [ ] Create accessibility documentation
 
-### Phase 8: Release Preparation (Week 15-16)
+### Phase 8: Internationalization (Week 15-16)
+**Goal**: Implement comprehensive internationalization support
+
+#### 8.1 i18next Setup
+- [ ] Install and configure i18next
+- [ ] Set up react-i18next for React integration
+- [ ] Configure i18next with TypeScript support
+- [ ] Set up language detection and fallback
+- [ ] Create translation resource structure
+
+#### 8.2 Translation Infrastructure
+- [ ] Create translation key management system
+- [ ] Set up namespace organization for different features
+- [ ] Implement pluralization rules
+- [ ] Add context-based translations
+- [ ] Create translation extraction tools
+
+#### 8.3 UI Internationalization
+- [ ] Replace all hardcoded strings with translation keys
+- [ ] Implement date/time localization
+- [ ] Add number and currency formatting
+- [ ] Handle RTL language support
+- [ ] Create language switcher component
+
+#### 8.4 Content Localization
+- [ ] Localize error messages and notifications
+- [ ] Translate form labels and validation messages
+- [ ] Localize navigation and menu items
+- [ ] Add accessibility labels translation
+- [ ] Create translation testing utilities
+
+### Phase 9: Integration Testing (Week 17-18)
+**Goal**: Comprehensive end-to-end testing with Playwright
+
+#### 9.1 Playwright Setup
+- [ ] Configure Playwright test environment
+- [ ] Set up multiple browser testing (Chromium, Firefox, Safari)
+- [ ] Configure test data management
+- [ ] Set up visual regression testing
+- [ ] Create page object models
+
+#### 9.2 Core Flow Testing
+- [ ] Test authentication flows (OAuth + API token)
+- [ ] Test course navigation and content viewing
+- [ ] Test assignment submission workflows
+- [ ] Test offline/online synchronization
+- [ ] Test search and filtering functionality
+
+#### 9.3 Cross-Platform Testing
+- [ ] Test on Windows, macOS, and Linux
+- [ ] Validate platform-specific features
+- [ ] Test auto-update mechanisms
+- [ ] Validate file system operations
+- [ ] Test system integration features
+
+#### 9.4 Performance Testing
+- [ ] Test application startup time
+- [ ] Measure memory usage under load
+- [ ] Test large dataset handling
+- [ ] Validate network request optimization
+- [ ] Test database query performance
+
+### Phase 10: Release Preparation (Week 19-20)
 **Goal**: Prepare for production release
 
-#### 8.1 Platform Builds
+#### 10.1 Platform Builds
 - [ ] Configure auto-update system
 - [ ] Build Windows installer
 - [ ] Create macOS .app bundle
 - [ ] Set up Linux packages
 - [ ] Configure code signing
 
-#### 8.2 Documentation
+#### 10.2 Documentation
 - [ ] Write user documentation
 - [ ] Create developer guides
 - [ ] Build API documentation
 - [ ] Add troubleshooting guide
 - [ ] Create video tutorials
 
-#### 8.3 Release Pipeline
+#### 10.3 Release Pipeline
 - [ ] Set up release automation
 - [ ] Configure distribution channels
 - [ ] Create release notes template
@@ -221,6 +297,9 @@ This document outlines the step-by-step implementation plan for Canvas Local, a 
 3. Create feature branch for new work
 4. Write tests alongside implementation
 5. Ensure linting passes before commit
+6. Verify file size limits (<500 lines warning, <700 lines hard limit)
+7. Ensure minimum test coverage (1% threshold)
+8. Run integration tests for affected features
 
 ### Weekly Goals
 - Complete planned phase items
@@ -230,12 +309,16 @@ This document outlines the step-by-step implementation plan for Canvas Local, a 
 - Plan upcoming work
 
 ### Code Review Checklist
-- [ ] Tests written and passing
+- [ ] Tests written and passing (minimum 1% coverage)
 - [ ] Type safety maintained
 - [ ] Error handling comprehensive
 - [ ] Security considerations addressed
 - [ ] Performance impact assessed
 - [ ] Documentation updated
+- [ ] File size within limits (<700 lines)
+- [ ] Translation keys used instead of hardcoded strings
+- [ ] GraphQL operations properly typed with codegen
+- [ ] Integration tests updated if needed
 
 ## Risk Mitigation
 
