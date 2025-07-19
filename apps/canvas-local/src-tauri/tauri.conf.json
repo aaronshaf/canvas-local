@@ -39,7 +39,6 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "identifier": "com.canvas-local.app",
     "category": "Education",
     "shortDescription": "Desktop client for Canvas LMS",
     "longDescription": "Canvas Local is a desktop application for interacting with Canvas LMS, providing offline access and enhanced productivity features.",
