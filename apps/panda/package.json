@@ -1,5 +1,5 @@
 {
-  "name": "canvas-local",
+  "name": "panda",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -15,8 +15,8 @@
     "tauri:build": "tauri build"
   },
   "dependencies": {
-    "@canvas-local/shared-lib": "workspace:*",
-    "@canvas-local/ui-components": "workspace:*",
+    "@panda/shared-lib": "workspace:*",
+    "@panda/ui-components": "workspace:*",
     "@tauri-apps/api": "^2.2.0",
     "@tauri-apps/plugin-shell": "^2.0.1",
     "react": "^18.3.1",

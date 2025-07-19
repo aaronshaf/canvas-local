@@ -1,6 +1,6 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
-import { CanvasThemeProvider } from '@canvas-local/ui-components';
+import { CanvasThemeProvider } from '@panda/ui-components';
 import { useNavigationShortcuts } from '../hooks/useNavigationShortcuts';
 
 function RootComponent() {

@@ -19,7 +19,7 @@ This document outlines the step-by-step implementation plan for Panda, a desktop
 #### 1.1 Repository Setup
 - [ ] Initialize monorepo structure with Bun workspaces
 - [ ] Configure workspace directories:
-  - `apps/canvas-local`
+  - `apps/panda`
   - `packages/shared-lib`
   - `packages/ui-components`
 - [ ] Set up base `package.json` with workspace configuration
@@ -48,7 +48,7 @@ This document outlines the step-by-step implementation plan for Panda, a desktop
   - [ ] Create initial test structure
 
 #### 1.3 Tauri Application Scaffold
-- [ ] Initialize Tauri application in `apps/canvas-local`
+- [ ] Initialize Tauri application in `apps/panda`
 - [ ] Configure Tauri for all target platforms
 - [ ] Set up basic window configuration
 - [ ] Configure CSP and security settings

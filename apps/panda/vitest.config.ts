@@ -31,8 +31,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './src'),
-      '@canvas-local/shared-lib': resolve(__dirname, '../../packages/shared-lib/src'),
-      '@canvas-local/ui-components': resolve(__dirname, '../../packages/ui-components/src'),
+      '@panda/shared-lib': resolve(__dirname, '../../packages/shared-lib/src'),
+      '@panda/ui-components': resolve(__dirname, '../../packages/ui-components/src'),
     },
   },
 });

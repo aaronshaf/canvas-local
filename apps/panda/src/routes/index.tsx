@@ -1,6 +1,6 @@
 import React from 'react';
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { LoginForm } from '@canvas-local/ui-components';
+import { LoginForm } from '@panda/ui-components';
 import { useAuth } from '../hooks/useAuth';
 import type { RouterContext } from '../types/router';
 

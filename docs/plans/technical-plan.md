@@ -34,7 +34,7 @@ We will use a monorepo managed by `bun` workspaces to organize the codebase. Thi
 ```
 /
 ├── apps/
-│   └── canvas-local/      # The main Tauri application
+│   └── panda/             # The main Tauri application
 │       ├── src/           # Frontend React code
 │       ├── src-tauri/     # Rust backend code
 │       ├── tauri.conf.json
@@ -52,7 +52,7 @@ We will use a monorepo managed by `bun` workspaces to organize the codebase. Thi
 └── bun.lockb              # Bun lockfile
 ```
 
-- **`apps/canvas-local`**: The main application package. It will contain the Tauri-specific configuration and the frontend React code.
+- **`apps/panda`**: The main application package. It will contain the Tauri-specific configuration and the frontend React code.
 - **`packages/shared-lib`**: A shared library for code used across the monorepo. This is the ideal place for:
     - Canvas API client logic.
     - Effect schemas for API responses and database models.
@@ -63,7 +63,7 @@ We will use a monorepo managed by `bun` workspaces to organize the codebase. Thi
 
 ### Database (SQLite)
 - We will use the `tauri-plugin-sql` with the `sqlite` feature.
-- The database file (e.g., `canvas-local.db`) will be stored in the user's app config directory, managed automatically by Tauri.
+- The database file (e.g., `panda.db`) will be stored in the user's app config directory, managed automatically by Tauri.
 - **Migrations:** Database schema changes will be managed via SQL migration files as supported by the plugin. Migrations will be defined in Rust (`src-tauri/src/main.rs`) and executed automatically on app startup.
 
 ### Secure API Token Storage
@@ -86,7 +86,7 @@ We will use a monorepo managed by `bun` workspaces to organize the codebase. Thi
 ### Bun Workspaces
 - All dependencies will be managed by `bun`.
 - `bun install` in the root will install dependencies for all workspaces.
-- Scripts will be run from the root `package.json` (e.g., `bun run -w @app/canvas-local dev`).
+- Scripts will be run from the root `package.json` (e.g., `bun run -w @app/panda dev`).
 
 ### Biome
 - A `biome.json` file in the root will configure formatting and linting rules.
@@ -128,7 +128,7 @@ A workflow will be created in `.github/workflows/ci.yml` to automate quality che
     - Runs `bun test --coverage` to execute all tests and check the 80% coverage minimum.
 
 2.  **`build_app` (depends on `lint_and_test`):**
-    - Runs `bun run -w @app/canvas-local build` to ensure the application builds successfully.
+    - Runs `bun run -w @app/panda build` to ensure the application builds successfully.
 
 3.  **`release` (optional, on tag push):**
     - A separate workflow triggered by pushing a git tag (e.g., `v1.2.3`).

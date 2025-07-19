@@ -8,8 +8,8 @@
     "jsx": "react-jsx",
     "paths": {
       "@/*": ["./src/*"],
-      "@canvas-local/shared-lib": ["../../packages/shared-lib/src"],
-      "@canvas-local/ui-components": ["../../packages/ui-components/src"]
+      "@panda/shared-lib": ["../../packages/shared-lib/src"],
+      "@panda/ui-components": ["../../packages/ui-components/src"]
     }
   },
   "include": ["./src/**/*", "./src-tauri/**/*"],
