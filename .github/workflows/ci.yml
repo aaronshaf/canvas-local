@@ -185,7 +185,7 @@ jobs:
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
-          workspaces: './apps/canvas-local/src-tauri -> target'
+          workspaces: './apps/panda/src-tauri -> target'
 
       - name: Install dependencies (Ubuntu only)
         if: matrix.platform.os == 'ubuntu-latest'
@@ -204,7 +204,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          projectPath: ./apps/canvas-local
+          projectPath: ./apps/panda
           args: --target ${{ matrix.platform.rust_target }}
           tauriScript: bun tauri
 
