@@ -47,7 +47,7 @@ interface ActivityStreamItem {
 }
 
 export const ActivityService = {
-  getRecentActivities: () =>
+  getRecentActivities: (): Effect.Effect<Activity[], never, never> =>
     Effect.all([
       // Fetch assignments due soon
       TauriApiClient.rest<UpcomingEvent[]>({

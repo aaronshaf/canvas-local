@@ -1,4 +1,9 @@
-import { useQuery, useMutation, type UseQueryOptions, type UseMutationOptions } from '@tanstack/react-query';
+import {
+  useQuery,
+  useMutation,
+  type UseQueryOptions,
+  type UseMutationOptions,
+} from '@tanstack/react-query';
 import { Effect } from 'effect';
 
 type EffectQueryOptions<T, E> = Omit<UseQueryOptions<T, Error>, 'queryFn'> & {

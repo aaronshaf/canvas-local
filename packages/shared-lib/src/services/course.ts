@@ -83,7 +83,7 @@ interface RestCourse {
 }
 
 export const CourseService = {
-  getCourses: () =>
+  getCourses: (): Effect.Effect<CourseStats[], Error, never> =>
     TauriApiClient.graphql<{ allCourses: GraphQLCourse[] }>({
       query: GetCoursesQuery,
     }).pipe(
@@ -115,7 +115,7 @@ export const CourseService = {
     ),
 
   // For now, let's also provide a REST fallback that gets more complete data
-  getCoursesWithStats: () =>
+  getCoursesWithStats: (): Effect.Effect<CourseStats[], Error, never> =>
     TauriApiClient.rest<RestCourse[]>({
       method: 'GET',
       path: '/api/v1/courses',

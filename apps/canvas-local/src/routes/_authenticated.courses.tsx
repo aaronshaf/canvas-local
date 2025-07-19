@@ -30,10 +30,7 @@ function CoursesPage() {
         {courses.map((course) => (
           <Grid.Row key={course.id}>
             <Grid.Col width={{ small: 12, medium: 6, large: 4 }}>
-              <CourseCard
-                course={course}
-                onClick={() => handleCourseClick(course.id)}
-              />
+              <CourseCard course={course} onClick={() => handleCourseClick(course.id)} />
             </Grid.Col>
           </Grid.Row>
         ))}

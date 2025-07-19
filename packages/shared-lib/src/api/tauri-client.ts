@@ -24,7 +24,7 @@ interface GraphQLResponse<T> {
 }
 
 export const TauriApiClient = {
-  graphql: <T = unknown>(request: GraphQLRequest) =>
+  graphql: <T = unknown>(request: GraphQLRequest): Effect.Effect<T, Error, never> =>
     Effect.tryPromise({
       try: () => invoke<GraphQLResponse<T>>('graphql_request', { request }),
       catch: (error) => new Error(`GraphQL request failed: ${error}`),
@@ -40,7 +40,7 @@ export const TauriApiClient = {
       }),
     ),
 
-  rest: <T = unknown>(request: RestRequest) =>
+  rest: <T = unknown>(request: RestRequest): Effect.Effect<T, Error, never> =>
     Effect.tryPromise({
       try: () => invoke<T>('rest_request', { request }),
       catch: (error) => new Error(`REST request failed: ${error}`),

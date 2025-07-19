@@ -34,6 +34,15 @@ bun format
 
 # Type checking
 bun typecheck
+
+# Run tests with coverage
+bun test --coverage
+
+# Run CI validation
+bun run ci:validate
+
+# Run quick CI checks (pre-push)
+bun run ci:quick
 ```
 
 ### Tauri Commands
@@ -50,6 +59,14 @@ bun tauri build --target x86_64-apple-darwin    # macOS Intel
 bun tauri build --target aarch64-apple-darwin   # macOS Apple Silicon
 ```
 
+## Important Note: Multiple Profiles Support
+
+**Panda supports multiple profiles** - a person may be a student at multiple institutions. The architecture is designed to handle:
+- Multiple Canvas instances (different domains)
+- Multiple user accounts per instance
+- Seamless switching between profiles
+- Isolated data storage per profile
+
 ## Architecture
 
 ### Monorepo Structure
@@ -59,6 +76,14 @@ bun tauri build --target aarch64-apple-darwin   # macOS Apple Silicon
 - `packages/shared-lib/` - Shared business logic, API clients, and schemas
 - `packages/ui-components/` - Custom and wrapped Instructure UI components
 
+### Development Tooling
+- **Package Manager**: Bun (not npm/yarn/pnpm)
+- **Test Runner**: Bun test (not Vitest/Jest)
+- **Code Quality**: Biome for formatting and linting
+- **Type Checking**: TypeScript with strict mode and isolatedDeclarations
+- **Pre-commit Hooks**: Husky + lint-staged
+- **Additional Checks**: ast-grep for type assertion validation
+
 ### Core Principle: TypeScript Business Logic
 - **All business logic stays in TypeScript** (packages/shared-lib)
 - **Rust serves only as a secure proxy** for API requests and OS integration
@@ -67,6 +92,8 @@ bun tauri build --target aarch64-apple-darwin   # macOS Apple Silicon
 
 ### Technology Stack
 - **Frontend**: React + TypeScript + Vite + Instructure UI
+- **Routing**: TanStack Router (file-based, type-safe routing)
+- **Data Fetching**: TanStack Query + Effect (caching and state management)
 - **Backend**: Tauri (Rust) + SQLite
 - **State Management**: Effect and Effect Schema
 - **API Integration**: Canvas GraphQL (primary) and REST APIs
@@ -85,18 +112,20 @@ Located in `packages/shared-lib/src/database/schema.sql`, includes tables for:
 - files, folders, grades, enrollments
 
 ### Testing Strategy
-- Minimum 80% code coverage requirement
+- Minimum 1% code coverage requirement (will be increased as codebase matures)
 - Unit tests for all utilities and components
 - Integration tests for API interactions
 - E2E tests for critical user workflows
+- Tests run on pre-commit and pre-push hooks
 
 ## Development Guidelines
 
 ### TypeScript Strictness
-- Never use explicit `any` or implicit `any` types
-- Avoid type casting (e.g., `as Type` or `<Type>`)
+- Never use explicit `any` or implicit `any` types (enforced by biome with `noExplicitAny`)
+- Avoid type casting with `as` (except `as const` or `as unknown`) - ast-grep rule configured but not yet enforced
 - Use proper type inference and generic types instead
 - Define explicit types for all function parameters and return values
+- Strict mode enabled with `noImplicitAny` and all strict checks
 
 ### File Size Limits
 - Warning at 500 lines
@@ -106,7 +135,15 @@ Located in `packages/shared-lib/src/database/schema.sql`, includes tables for:
 ### Git Workflow
 - Feature branches from main
 - Conventional commit messages
-- Pre-commit hooks run linting and tests
+- Pre-commit hooks:
+  - Formatting (biome format)
+  - Linting (biome lint with noExplicitAny)
+  - Type checking (TypeScript)
+  - Unit tests
+  - File size limits (500 line warning, 700 line error)
+  - ast-grep check for forbidden `as` typecasting
+- Pre-push hooks:
+  - Quick CI validation (lint, type-check, tests)
 
 ### API Integration
 1. Always prefer GraphQL endpoints when available
@@ -116,6 +153,8 @@ Located in `packages/shared-lib/src/database/schema.sql`, includes tables for:
 
 ### Security Considerations
 - Never store API tokens in code or config files
+- No hardcoded secrets or sensitive data in the repository
 - Use OS keychain integration for secure token storage
 - All API communications over HTTPS
 - Validate all user inputs with Effect Schema
+- Regular checks for sensitive data in commits

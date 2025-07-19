@@ -1,6 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Heading } from '@instructure/ui-heading';
-import { DashboardContent, type ActivityItem, type ActivityType } from '@canvas-local/ui-components';
+import {
+  DashboardContent,
+  type ActivityItem,
+  type ActivityType,
+} from '@canvas-local/ui-components';
 import { useAuth } from '../hooks/useAuth';
 import { CourseService, ActivityService, type Activity } from '@canvas-local/shared-lib/services';
 import { useEffectQuery } from '../hooks/useEffectQuery';

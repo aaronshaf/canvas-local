@@ -1,0 +1,9 @@
+ruleDirs:
+  - rules
+  
+ignores:
+  - "**/*.gen.ts"
+  - "**/generated/**"
+  - "**/node_modules/**"
+  - "**/dist/**"
+  - "**/build/**"
