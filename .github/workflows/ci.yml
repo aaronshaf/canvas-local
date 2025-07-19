@@ -86,6 +86,9 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Build packages first
+        run: bun run build:packages
+
       - name: Run tests
         run: bun test
 
