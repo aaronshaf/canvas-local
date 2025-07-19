@@ -1,56 +1,66 @@
-import { useState } from 'react';
-import { View } from '@instructure/ui-view';
-import { Heading } from '@instructure/ui-heading';
-import { Flex } from '@instructure/ui-flex';
-import { IconButton } from '@instructure/ui-buttons';
+import React from 'react';
+import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import {
-  IconSettingsLine,
-  IconCalendarMonthLine,
-  IconInboxLine,
-  IconQuestionLine,
+  View,
+  Flex,
+  Navigation,
+  Heading,
+  IconButton,
+  Breadcrumb,
+  Responsive,
+  Link,
+  TruncateText,
+} from '@instructure/ui';
+import {
   IconDashboardLine,
   IconCoursesLine,
+  IconCalendarMonthLine,
+  IconInboxLine,
   IconDocumentLine,
+  IconSettingsLine,
+  IconQuestionLine,
   IconArrowOpenStartLine,
 } from '@instructure/ui-icons';
-import { Tray } from '@instructure/ui-tray';
-import { Navigation } from '@instructure/ui-navigation';
-import { List } from '@instructure/ui-list';
-import { Link } from '@instructure/ui-link';
-import { Badge } from '@instructure/ui-badge';
-import { Breadcrumb } from '@instructure/ui-breadcrumb';
-import { Responsive } from '@instructure/ui-responsive';
-import { TruncateText } from '@instructure/ui-truncate-text';
-import { DashboardContent } from './DashboardContent';
-import type { CourseData, ActivityItem } from './index';
+import { useNavigate } from '@tanstack/react-router';
+import { useAuth } from '../hooks/useAuth';
 
-import type { FC } from 'react';
+export const Route = createFileRoute('/_authenticated')({
+  beforeLoad: ({ context }) => {
+    // If not authenticated, redirect to login
+    const auth = (context as any).auth;
+    if (!auth || !auth.authState.isAuthenticated) {
+      throw redirect({
+        to: '/',
+      });
+    }
+  },
+  component: AuthenticatedLayout,
+});
 
-export interface DashboardProps {
-  userName: string;
-  courses: CourseData[];
-  recentActivities: ActivityItem[];
-  isLoading?: boolean;
-  onLogout: () => void;
-  onNavigate?: (section: string) => void;
-  onCourseClick?: (courseId: string) => void;
-  onActivityClick?: (activity: ActivityItem) => void;
-}
+function AuthenticatedLayout() {
+  const navigate = useNavigate();
+  const { authState, logout } = useAuth();
+  const pathname = window.location.pathname;
 
-export const Dashboard: FC<DashboardProps> = ({
-  userName,
-  courses,
-  recentActivities,
-  isLoading,
-  onLogout,
-  onNavigate,
-  onCourseClick,
-  onActivityClick,
-}) => {
-  const [trayOpen, setTrayOpen] = useState(false);
+  React.useEffect(() => {
+    if (!authState.isAuthenticated) {
+      navigate({ to: '/' });
+    }
+  }, [authState.isAuthenticated, navigate]);
+
+  const handleNavigation = (path: string) => {
+    navigate({ to: path });
+  };
+
+  const getBreadcrumbs = () => {
+    // TODO: Build breadcrumbs based on current route
+    const parts = pathname.split('/').filter(Boolean);
+    return parts.map((part) => part.charAt(0).toUpperCase() + part.slice(1));
+  };
 
   return (
     <View as="div" height="100vh" background="primary">
+      {/* Header */}
       <View as="header" background="primary-inverse" padding="medium" shadow="resting">
         <Flex justifyItems="space-between" alignItems="center">
           <Flex.Item>
@@ -63,36 +73,39 @@ export const Dashboard: FC<DashboardProps> = ({
               <IconButton
                 withBackground={false}
                 withBorder={false}
-                screenReaderLabel="Inbox"
-                onClick={() => onNavigate?.('inbox')}
+                screenReaderLabel="Settings"
+                onClick={() => handleNavigation('/settings')}
               >
-                <Badge count={3}>
-                  <IconInboxLine color="primary-inverse" />
-                </Badge>
-              </IconButton>
-              <IconButton
-                withBackground={false}
-                withBorder={false}
-                screenReaderLabel="Calendar"
-                onClick={() => onNavigate?.('calendar')}
-              >
-                <IconCalendarMonthLine color="primary-inverse" />
+                <IconSettingsLine color="primary-inverse" />
               </IconButton>
               <IconButton
                 withBackground={false}
                 withBorder={false}
                 screenReaderLabel="Help"
-                onClick={() => onNavigate?.('help')}
+                onClick={() => handleNavigation('/help')}
               >
                 <IconQuestionLine color="primary-inverse" />
               </IconButton>
               <IconButton
                 withBackground={false}
                 withBorder={false}
-                screenReaderLabel="Settings"
-                onClick={() => setTrayOpen(true)}
+                screenReaderLabel="Logout"
+                onClick={logout}
+                title={authState.user?.name || 'User'}
               >
-                <IconSettingsLine color="primary-inverse" />
+                <View
+                  as="div"
+                  width="24px"
+                  height="24px"
+                  background="primary"
+                  borderRadius="circle"
+                  textAlign="center"
+                  display="inline-block"
+                >
+                  <span style={{ color: 'white', fontSize: '14px', fontWeight: 'bold' }}>
+                    {(authState.user?.name || 'U').charAt(0).toUpperCase()}
+                  </span>
+                </View>
               </IconButton>
             </Flex>
           </Flex.Item>
@@ -100,6 +113,7 @@ export const Dashboard: FC<DashboardProps> = ({
       </View>
 
       <Flex height="calc(100vh - 80px)">
+        {/* Sidebar Navigation */}
         <Flex.Item width="240px" shouldGrow={false}>
           <View
             as="div"
@@ -121,9 +135,9 @@ export const Dashboard: FC<DashboardProps> = ({
                 icon={<IconDashboardLine />}
                 onClick={(e) => {
                   e.preventDefault();
-                  onNavigate?.('dashboard');
+                  handleNavigation('/dashboard');
                 }}
-                selected
+                selected={pathname === '/dashboard'}
               />
               <Navigation.Item
                 label="Courses"
@@ -131,8 +145,9 @@ export const Dashboard: FC<DashboardProps> = ({
                 icon={<IconCoursesLine />}
                 onClick={(e) => {
                   e.preventDefault();
-                  onNavigate?.('courses');
+                  handleNavigation('/courses');
                 }}
+                selected={pathname.startsWith('/courses')}
               />
               <Navigation.Item
                 label="Calendar"
@@ -140,8 +155,9 @@ export const Dashboard: FC<DashboardProps> = ({
                 icon={<IconCalendarMonthLine />}
                 onClick={(e) => {
                   e.preventDefault();
-                  onNavigate?.('calendar');
+                  handleNavigation('/calendar');
                 }}
+                selected={pathname === '/calendar'}
               />
               <Navigation.Item
                 label="Inbox"
@@ -149,23 +165,25 @@ export const Dashboard: FC<DashboardProps> = ({
                 icon={<IconInboxLine />}
                 onClick={(e) => {
                   e.preventDefault();
-                  onNavigate?.('inbox');
+                  handleNavigation('/inbox');
                 }}
-              >
-                <Badge count={3} />
-              </Navigation.Item>
+                selected={pathname === '/inbox'}
+              />
               <Navigation.Item
                 label="Files"
                 href="#"
                 icon={<IconDocumentLine />}
                 onClick={(e) => {
                   e.preventDefault();
-                  onNavigate?.('files');
+                  handleNavigation('/files');
                 }}
+                selected={pathname === '/files'}
               />
             </Navigation>
           </View>
         </Flex.Item>
+
+        {/* Main Content Area */}
         <Flex.Item shouldGrow>
           <Flex direction="column" height="100%">
             {/* Breadcrumb Area */}
@@ -183,18 +201,22 @@ export const Dashboard: FC<DashboardProps> = ({
                   }}
                 >
                   {(_, matches) => {
+                    const breadcrumbs = getBreadcrumbs();
                     if (matches?.includes('tablet')) {
                       return (
                         <Breadcrumb label="breadcrumb">
-                          <Breadcrumb.Link
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              onNavigate?.('dashboard');
-                            }}
-                          >
-                            Dashboard
-                          </Breadcrumb.Link>
+                          {breadcrumbs.map((crumb) => (
+                            <Breadcrumb.Link
+                              key={crumb}
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                // Navigate to breadcrumb path
+                              }}
+                            >
+                              {crumb}
+                            </Breadcrumb.Link>
+                          ))}
                         </Breadcrumb>
                       );
                     }
@@ -205,10 +227,12 @@ export const Dashboard: FC<DashboardProps> = ({
                           renderIcon={IconArrowOpenStartLine}
                           onClick={(e) => {
                             e.preventDefault();
-                            onNavigate?.('dashboard');
+                            navigate({ to: '..' });
                           }}
                         >
-                          <TruncateText>Dashboard</TruncateText>
+                          <TruncateText>
+                            {breadcrumbs[breadcrumbs.length - 1] || 'Back'}
+                          </TruncateText>
                         </Link>
                       );
                   }}
@@ -216,52 +240,15 @@ export const Dashboard: FC<DashboardProps> = ({
               </View>
             </Flex.Item>
 
-            {/* Main Content Area */}
+            {/* Page Content */}
             <Flex.Item shouldGrow>
               <View as="main" padding="large" background="secondary" height="100%" overflowY="auto">
-                <Heading level="h2" margin="0 0 medium 0">
-                  Welcome back, {userName}!
-                </Heading>
-                <DashboardContent
-                  courses={courses}
-                  recentActivities={recentActivities}
-                  isLoading={isLoading}
-                  onCourseClick={onCourseClick}
-                  onActivityClick={onActivityClick}
-                />
+                <Outlet />
               </View>
             </Flex.Item>
           </Flex>
         </Flex.Item>
       </Flex>
-
-      <Tray
-        label="User Settings"
-        open={trayOpen}
-        onDismiss={() => setTrayOpen(false)}
-        size="small"
-        placement="end"
-      >
-        <View as="div" padding="medium">
-          <Heading level="h3" margin="0 0 medium 0">
-            Settings
-          </Heading>
-          <List isUnstyled>
-            <List.Item>
-              <Link onClick={() => onNavigate?.('profile')}>Profile</Link>
-            </List.Item>
-            <List.Item>
-              <Link onClick={() => onNavigate?.('notifications')}>Notifications</Link>
-            </List.Item>
-            <List.Item>
-              <Link onClick={() => onNavigate?.('account')}>Account Settings</Link>
-            </List.Item>
-            <List.Item>
-              <Link onClick={onLogout}>Logout</Link>
-            </List.Item>
-          </List>
-        </View>
-      </Tray>
     </View>
   );
-};
+}

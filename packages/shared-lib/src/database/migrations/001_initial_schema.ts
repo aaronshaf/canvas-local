@@ -1,6 +1,6 @@
 import type { Migration } from '../migrations';
 
-const schema = `-- Canvas Local Database Schema
+const schema = `-- Panda Database Schema
 -- Version: 1.0.0
 
 -- Enable foreign key constraints

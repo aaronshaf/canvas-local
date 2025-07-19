@@ -1,7 +1,7 @@
-# Canvas Local Implementation Plan
+# Panda Implementation Plan
 
 ## Overview
-This document outlines the step-by-step implementation plan for Canvas Local, a desktop application for Canvas LMS built with Tauri, React, TypeScript, and Rust.
+This document outlines the step-by-step implementation plan for Panda, a desktop application for Canvas LMS built with Tauri, React, TypeScript, and Rust.
 
 ## Implementation Phases
 

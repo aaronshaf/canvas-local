@@ -20,6 +20,7 @@ export * from './schemas/submission';
 
 // API Client
 export * from './api/client';
+export * from './api/tauri-client';
 
 // GraphQL Generated Types
 export * from './api/graphql/generated';

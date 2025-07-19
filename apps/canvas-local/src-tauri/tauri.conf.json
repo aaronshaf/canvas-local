@@ -4,7 +4,10 @@
   "version": "0.1.0",
   "identifier": "com.tauri-app.app",
   "build": {
-    "frontendDist": "../src"
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420",
+    "beforeDevCommand": "bun dev",
+    "beforeBuildCommand": "bun build"
   },
   "app": {
     "withGlobalTauri": true,

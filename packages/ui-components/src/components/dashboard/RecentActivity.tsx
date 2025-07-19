@@ -21,6 +21,7 @@ export interface ActivityItem {
   type: ActivityType;
   title: string;
   courseName: string;
+  courseId: string;
   timestamp: Date;
   unread?: boolean;
   dueDate?: Date;
