@@ -1,4 +1,4 @@
-# Technical Plan: Canvas Local Tauri App
+# Technical Plan: Panda Tauri App
 
 This document outlines the technical plan for building a local desktop application for Canvas using Tauri. It details the project structure, technology stack, development workflow, and CI/CD strategy based on the requirements provided.
 

@@ -1,4 +1,4 @@
--- Canvas Local Database Schema
+-- Panda Database Schema
 -- Version: 1.0.0
 
 -- Enable foreign key constraints

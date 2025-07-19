@@ -13,6 +13,7 @@ pub struct User {
 pub struct AuthResult {
     pub user: User,
     pub domain: String,
+    pub api_key: String,
 }
 
 #[derive(Debug, Default)]
@@ -33,7 +34,12 @@ pub async fn authenticate(
     let full_domain = if domain.starts_with("http") {
         domain.clone()
     } else {
-        format!("https://{}", domain)
+        // Special case for local test domain
+        if domain == "canvas-web.inseng.test" {
+            format!("http://{}", domain)
+        } else {
+            format!("https://{}", domain)
+        }
     };
 
     // Make a test API call to validate credentials
@@ -48,7 +54,9 @@ pub async fn authenticate(
         .map_err(|e| format!("Failed to connect to Canvas: {}", e))?;
 
     if !response.status().is_success() {
-        return Err(format!("Authentication failed: {}", response.status()));
+        let status = response.status();
+        let error_body = response.text().await.unwrap_or_else(|_| "No error details available".to_string());
+        return Err(format!("Authentication failed: {} - {}", status, error_body));
     }
 
     let user_data: serde_json::Value = response
@@ -69,6 +77,7 @@ pub async fn authenticate(
     let auth_result = AuthResult {
         user,
         domain: full_domain,
+        api_key,
     };
 
     // Store in state

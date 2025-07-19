@@ -1,6 +1,7 @@
 mod auth;
+mod api_proxy;
 
-use auth::{AuthStateManager, AuthState};
+use auth::AuthState;
 use std::sync::Mutex;
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
@@ -20,6 +21,8 @@ pub fn run() {
             auth::store_auth_token,
             auth::clear_auth_token,
             auth::get_stored_auth,
+            api_proxy::graphql_request,
+            api_proxy::rest_request,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

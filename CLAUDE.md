@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Canvas Local is a desktop application for interacting with Canvas LMS, built with Tauri, React, TypeScript, and Rust. The project uses a monorepo structure with functional programming patterns.
+Panda is a desktop application for interacting with Canvas LMS, built with Tauri, React, TypeScript, and Rust. The project uses a monorepo structure with functional programming patterns.
 
 ## Commands
 
@@ -54,10 +54,16 @@ bun tauri build --target aarch64-apple-darwin   # macOS Apple Silicon
 
 ### Monorepo Structure
 - `apps/canvas-local/` - Main Tauri desktop application
-  - `src-tauri/` - Rust backend code
+  - `src-tauri/` - Rust backend code (secure proxy layer only)
   - `src/` - React frontend code
 - `packages/shared-lib/` - Shared business logic, API clients, and schemas
 - `packages/ui-components/` - Custom and wrapped Instructure UI components
+
+### Core Principle: TypeScript Business Logic
+- **All business logic stays in TypeScript** (packages/shared-lib)
+- **Rust serves only as a secure proxy** for API requests and OS integration
+- GraphQL/REST requests originate from the frontend and are proxied through Rust
+- This keeps the codebase maintainable and allows for better code reuse
 
 ### Technology Stack
 - **Frontend**: React + TypeScript + Vite + Instructure UI

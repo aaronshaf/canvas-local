@@ -1,4 +1,4 @@
-import type React from 'react';
+import type { FC, FormEvent } from 'react';
 import { useState } from 'react';
 import {
   Button,
@@ -20,7 +20,7 @@ export interface LoginFormProps {
   error?: string | null;
 }
 
-export const LoginForm: React.FC<LoginFormProps> = ({
+export const LoginForm: FC<LoginFormProps> = ({
   onLogin,
   isLoading = false,
   error = null,
@@ -79,7 +79,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     return true;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     const isDomainValid = validateDomain(domain);
@@ -87,8 +87,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({
     const isApiKeyValid = validateApiKey(apiKey);
 
     if (isDomainValid && isEmailValid && isApiKeyValid) {
-      // Ensure domain has https://
-      const fullDomain = domain.startsWith('http') ? domain : `https://${domain}`;
+      // Ensure domain has https:// (or http:// for test domain)
+      const fullDomain = domain.startsWith('http')
+        ? domain
+        : domain === 'canvas-web.inseng.test'
+          ? `http://${domain}`
+          : `https://${domain}`;
       await onLogin(fullDomain, email, apiKey);
     }
   };
@@ -98,7 +102,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       <Flex direction="column" gap="medium">
         <View textAlign="center" margin="0 0 large 0">
           <Heading level="h1" margin="0 0 small 0">
-            Welcome to Canvas Local
+            Welcome to Panda
           </Heading>
           <Text color="secondary">Connect to your Canvas instance to get started</Text>
         </View>
@@ -190,7 +194,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
         <View borderWidth="small 0 0 0" padding="medium 0 0 0" textAlign="center">
           <Text size="small" color="secondary">
-            Canvas Local is not affiliated with Instructure Inc.
+            Panda is not affiliated with Instructure Inc.
           </Text>
         </View>
       </Flex>
